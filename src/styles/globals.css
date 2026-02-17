@@ -1,0 +1,172 @@
+@import "tailwindcss";
+
+/* Custom CSS variables */
+:root {
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --world-blue: #4940E0;
+  --world-blue-light: #6B63FF;
+  --world-blue-dark: #3730A3;
+  --dark-bg: #0a0a0a;
+  --dark-bg-secondary: #141414;
+  --dark-bg-tertiary: #1a1a1a;
+  --dark-border: #262626;
+  --dark-border-light: #333333;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Card styles */
+.card {
+  background: var(--dark-bg-secondary);
+  border: 1px solid var(--dark-border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.card-hover {
+  background: var(--dark-bg-secondary);
+  border: 1px solid var(--dark-border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  transition: all 0.2s;
+}
+
+.card-hover:hover {
+  border-color: var(--dark-border-light);
+  box-shadow: 0 10px 15px -3px rgba(73, 64, 224, 0.05);
+}
+
+/* Button styles */
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  background: var(--world-blue);
+  color: white;
+  border: none;
+}
+
+.btn-primary:hover {
+  background: var(--world-blue-light);
+}
+
+.btn-secondary {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  background: var(--dark-bg-tertiary);
+  color: white;
+  border: 1px solid var(--dark-border);
+}
+
+.btn-secondary:hover {
+  border-color: var(--dark-border-light);
+}
+
+/* Input styles */
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--dark-bg-tertiary);
+  border: 1px solid var(--dark-border);
+  border-radius: 0.75rem;
+  color: white;
+  transition: all 0.2s;
+}
+
+.input::placeholder {
+  color: #6b7280;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--world-blue);
+  box-shadow: 0 0 0 1px var(--world-blue);
+}
+
+/* Badge styles */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.badge-orb {
+  background: rgba(73, 64, 224, 0.2);
+  color: var(--world-blue-light);
+}
+
+.badge-nfc {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+}
+
+.badge-chain {
+  background: rgba(107, 114, 128, 0.5);
+  color: #d1d5db;
+}
+
+/* Progress bar */
+.progress-bar {
+  height: 0.5rem;
+  background: var(--dark-bg-tertiary);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--world-blue);
+  border-radius: 9999px;
+  transition: width 0.5s;
+}
+
+/* Text gradient */
+.text-gradient {
+  background: linear-gradient(to right, var(--world-blue), var(--world-blue-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #141414;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333333;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #444444;
+}
