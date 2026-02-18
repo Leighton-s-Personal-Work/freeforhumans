@@ -53,7 +53,8 @@ contract FreeForHumansTest is Test {
     address public recipient = address(0x3);
     address public nonWhitelisted = address(0x4);
 
-    uint256 public constant APP_ID = 12345;
+    string public constant APP_ID = "app_test123";
+    string public constant ACTION = "claim";
     uint256 public constant ORB_CLAIM_AMOUNT = 100 ether;
     uint256 public constant NFC_CLAIM_AMOUNT = 50 ether;
     uint256 public constant TOTAL_BUDGET = 10000 ether;
@@ -94,7 +95,7 @@ contract FreeForHumansTest is Test {
     function setUp() public {
         worldId = new MockWorldID();
         token = new MockERC20("Test Token", "TEST");
-        freeForHumans = new FreeForHumans(address(worldId), APP_ID, relayer);
+        freeForHumans = new FreeForHumans(address(worldId), APP_ID, ACTION, relayer);
 
         // Whitelist the creator
         freeForHumans.whitelistCreator(creator, true);
@@ -107,19 +108,20 @@ contract FreeForHumansTest is Test {
 
     function test_constructor_setsCorrectValues() public view {
         assertEq(address(freeForHumans.worldIdRouter()), address(worldId));
-        assertEq(freeForHumans.appId(), APP_ID);
+        // externalNullifierHash is computed from APP_ID + ACTION
+        assertTrue(freeForHumans.externalNullifierHash() != 0);
         assertEq(freeForHumans.relayer(), relayer);
         assertEq(freeForHumans.owner(), owner);
     }
 
     function test_constructor_revertsWithZeroWorldId() public {
         vm.expectRevert(FreeForHumans.ZeroAddress.selector);
-        new FreeForHumans(address(0), APP_ID, relayer);
+        new FreeForHumans(address(0), APP_ID, ACTION, relayer);
     }
 
     function test_constructor_revertsWithZeroRelayer() public {
         vm.expectRevert(FreeForHumans.ZeroAddress.selector);
-        new FreeForHumans(address(worldId), APP_ID, address(0));
+        new FreeForHumans(address(worldId), APP_ID, ACTION, address(0));
     }
 
     // ============ Campaign Creation Tests ============

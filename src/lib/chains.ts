@@ -47,9 +47,9 @@ export const base: Chain = {
 export type SupportedChainId = 480 | 8453;
 
 // Contract addresses - these are public and can be hardcoded
-// Updated after redeployment on 2024-02-18
-const WORLD_CHAIN_CONTRACT = '0xA749A8E01Ebc3dc15C5281799534C5c4799FB84e' as const;
-const BASE_CONTRACT = '0xA749A8E01Ebc3dc15C5281799534C5c4799FB84e' as const;
+// Updated after redeployment on 2026-02-18 (fixed World ID external nullifier)
+const WORLD_CHAIN_CONTRACT = '0x8836028636C9F4B6f2c1F6970405E4FF7522018F' as const;
+const BASE_CONTRACT = '0x8836028636C9F4B6f2c1F6970405E4FF7522018F' as const;
 
 export const CHAIN_CONFIG: Record<SupportedChainId, {
   chain: Chain;

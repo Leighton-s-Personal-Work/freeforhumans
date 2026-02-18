@@ -21,7 +21,8 @@ contract DeployFreeForHumans is Script {
     function run() external {
         // Generic deployment - uses env vars for all config
         uint256 deployerPrivateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
-        uint256 appId = vm.envUint("WORLD_APP_ID");
+        string memory appId = vm.envString("WORLD_APP_ID");
+        string memory action = vm.envOr("WORLD_ACTION", string("claim"));
         address relayer = vm.envAddress("RELAYER_ADDRESS");
         address worldIdRouter = vm.envAddress("WORLD_ID_ROUTER");
 
@@ -30,12 +31,14 @@ contract DeployFreeForHumans is Script {
         FreeForHumans freeForHumans = new FreeForHumans(
             worldIdRouter,
             appId,
+            action,
             relayer
         );
 
         console.log("FreeForHumans deployed to:", address(freeForHumans));
         console.log("World ID Router:", worldIdRouter);
         console.log("App ID:", appId);
+        console.log("Action:", action);
         console.log("Relayer:", relayer);
 
         vm.stopBroadcast();
@@ -45,12 +48,14 @@ contract DeployFreeForHumans is Script {
     /// @dev Run: forge script script/Deploy.s.sol:DeployFreeForHumans --sig "deployWorldChain()" --rpc-url https://worldchain-mainnet.g.alchemy.com/public --broadcast --verify
     function deployWorldChain() external {
         uint256 deployerPrivateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
-        uint256 appId = vm.envUint("WORLD_APP_ID");
+        string memory appId = vm.envString("WORLD_APP_ID");
+        string memory action = vm.envOr("WORLD_ACTION", string("claim"));
         address relayer = vm.envAddress("RELAYER_ADDRESS");
 
         console.log("Deploying to World Chain...");
         console.log("World ID Router:", WORLD_CHAIN_ROUTER);
         console.log("App ID:", appId);
+        console.log("Action:", action);
         console.log("Relayer:", relayer);
 
         vm.startBroadcast(deployerPrivateKey);
@@ -58,6 +63,7 @@ contract DeployFreeForHumans is Script {
         FreeForHumans freeForHumans = new FreeForHumans(
             WORLD_CHAIN_ROUTER,
             appId,
+            action,
             relayer
         );
 
@@ -70,12 +76,14 @@ contract DeployFreeForHumans is Script {
     /// @dev Run: forge script script/Deploy.s.sol:DeployFreeForHumans --sig "deployBase()" --rpc-url https://mainnet.base.org --broadcast --verify
     function deployBase() external {
         uint256 deployerPrivateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
-        uint256 appId = vm.envUint("WORLD_APP_ID");
+        string memory appId = vm.envString("WORLD_APP_ID");
+        string memory action = vm.envOr("WORLD_ACTION", string("claim"));
         address relayer = vm.envAddress("RELAYER_ADDRESS");
 
         console.log("Deploying to Base...");
         console.log("World ID Router:", BASE_ROUTER);
         console.log("App ID:", appId);
+        console.log("Action:", action);
         console.log("Relayer:", relayer);
 
         vm.startBroadcast(deployerPrivateKey);
@@ -83,6 +91,7 @@ contract DeployFreeForHumans is Script {
         FreeForHumans freeForHumans = new FreeForHumans(
             BASE_ROUTER,
             appId,
+            action,
             relayer
         );
 

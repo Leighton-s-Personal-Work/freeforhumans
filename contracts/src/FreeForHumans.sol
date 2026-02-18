@@ -7,6 +7,17 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
+/// @title ByteHasher
+/// @notice Helper library for hashing bytes to field elements for World ID
+library ByteHasher {
+    /// @dev Converts bytes to a uint256 field element
+    /// @param value The bytes to hash
+    /// @return The field element
+    function hashToField(bytes memory value) internal pure returns (uint256) {
+        return uint256(keccak256(abi.encodePacked(value))) >> 8;
+    }
+}
+
 /// @title IWorldID
 /// @notice Interface for the World ID Router contract
 interface IWorldID {
@@ -32,6 +43,7 @@ interface IWorldID {
 /// @dev Uses World ID for sybil-resistant proof-of-personhood verification
 contract FreeForHumans is Ownable, Pausable, ReentrancyGuard {
     using SafeERC20 for IERC20;
+    using ByteHasher for bytes;
 
     // ============ Structs ============
 
@@ -57,8 +69,8 @@ contract FreeForHumans is Ownable, Pausable, ReentrancyGuard {
     /// @notice World ID Router contract
     IWorldID public immutable worldIdRouter;
 
-    /// @notice World App ID for external nullifier calculation
-    uint256 public immutable appId;
+    /// @notice Pre-computed external nullifier hash (from app_id + action)
+    uint256 public immutable externalNullifierHash;
 
     /// @notice Address authorized to submit claims on behalf of users
     address public relayer;
@@ -142,18 +154,24 @@ contract FreeForHumans is Ownable, Pausable, ReentrancyGuard {
 
     /// @notice Initializes the FreeForHumans contract
     /// @param _worldIdRouter Address of the World ID Router contract
-    /// @param _appId The World App ID (used for external nullifier calculation)
+    /// @param _appId The World App ID string (e.g., "app_xxx")
+    /// @param _action The action string registered in Developer Portal (e.g., "claim")
     /// @param _relayer Initial relayer address
     constructor(
         address _worldIdRouter,
-        uint256 _appId,
+        string memory _appId,
+        string memory _action,
         address _relayer
     ) Ownable(msg.sender) {
         if (_worldIdRouter == address(0)) revert ZeroAddress();
         if (_relayer == address(0)) revert ZeroAddress();
         
         worldIdRouter = IWorldID(_worldIdRouter);
-        appId = _appId;
+        // Compute external nullifier hash per World ID protocol:
+        // hashToField(abi.encodePacked(hashToField(appId), action))
+        externalNullifierHash = abi
+            .encodePacked(abi.encodePacked(_appId).hashToField(), _action)
+            .hashToField();
         relayer = _relayer;
     }
 
@@ -303,9 +321,7 @@ contract FreeForHumans is Ownable, Pausable, ReentrancyGuard {
         }
 
         // Verify the World ID proof
-        // External nullifier incorporates app_id and campaign_id for uniqueness
-        uint256 externalNullifierHash = _hashExternalNullifier(campaignId);
-        
+        // External nullifier is pre-computed from app_id + action
         worldIdRouter.verifyProof(
             root,
             groupId,
@@ -419,17 +435,10 @@ contract FreeForHumans is Ownable, Pausable, ReentrancyGuard {
 
     // ============ Internal Functions ============
 
-    /// @dev Computes the external nullifier hash for a campaign
-    /// @param campaignId The campaign ID
-    /// @return The external nullifier hash
-    function _hashExternalNullifier(uint256 campaignId) internal view returns (uint256) {
-        return uint256(keccak256(abi.encodePacked(appId, campaignId)));
-    }
-
-    /// @dev Computes the signal hash for an address
+    /// @dev Computes the signal hash for an address using World ID protocol
     /// @param signal The signal (recipient address)
     /// @return The signal hash
     function _hashSignal(address signal) internal pure returns (uint256) {
-        return uint256(keccak256(abi.encodePacked(signal)));
+        return abi.encodePacked(signal).hashToField();
     }
 }
