@@ -190,8 +190,8 @@ export function ClaimFlow({ campaign, appId }: ClaimFlowProps) {
           <div className="flex justify-center">
             <IDKitWidget
               app_id={appId as `app_${string}`}
-              action={`claim_campaign_${campaign.id}`}
-              signal={recipient || '0x0000000000000000000000000000000000000000'}
+              action={`claim`}
+              signal={`${campaign.chainId}-${campaign.id}-${recipient || '0x0000000000000000000000000000000000000000'}`}
               verification_level={
                 verificationLevel === 'orb' 
                   ? VerificationLevel.Orb 
