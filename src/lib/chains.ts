@@ -47,9 +47,9 @@ export const base: Chain = {
 export type SupportedChainId = 480 | 8453;
 
 // Contract addresses - these are public and can be hardcoded
-// Updated after redeployment on 2026-02-18 (fixed signal hash - use address bytes not string)
-const WORLD_CHAIN_CONTRACT = '0xBf329A6b1Ce5Fd59Ccf5f2370dA0012163E92336' as const;
-const BASE_CONTRACT = '0xBf329A6b1Ce5Fd59Ccf5f2370dA0012163E92336' as const;
+// Updated after redeployment on 2026-02-18 (fixed World ID hashing to match IDKit protocol)
+const WORLD_CHAIN_CONTRACT = '0xe60cb892073386F6b92eBdc267eCE818C633c2F3' as const;
+const BASE_CONTRACT = '0xe60cb892073386F6b92eBdc267eCE818C633c2F3' as const;
 
 export const CHAIN_CONFIG: Record<SupportedChainId, {
   chain: Chain;
