@@ -93,14 +93,17 @@ export default function CreateCampaignPage() {
   const { writeContract: writeCreate, isPending: isCreating } = useWriteContract();
 
   // Wait for transactions
-  const { isSuccess: approvalSuccess } = useWaitForTransactionReceipt({
+  const { isSuccess: approvalSuccess, isLoading: isApprovalLoading } = useWaitForTransactionReceipt({
     hash: approvalTxHash,
   });
-  const { isSuccess: createSuccess, data: createReceipt } = useWaitForTransactionReceipt({
+  const { isSuccess: createSuccess, isLoading: isCreateLoading } = useWaitForTransactionReceipt({
     hash: createTxHash,
   });
 
-  // Update step based on connection and whitelist status
+  // Track if we've already triggered create after approval
+  const [hasTriggeredCreate, setHasTriggeredCreate] = useState(false);
+
+  // Update step based on transaction states
   useEffect(() => {
     if (!isConnected) {
       setStep('connect');
@@ -109,22 +112,23 @@ export default function CreateCampaignPage() {
     } else if (isWhitelisted === true) {
       if (createSuccess) {
         setStep('success');
-      } else if (isCreating || createTxHash) {
+      } else if (createTxHash && (isCreating || isCreateLoading)) {
         setStep('creating');
-      } else if (isApproving || (approvalTxHash && !approvalSuccess)) {
+      } else if (approvalTxHash && !approvalSuccess && (isApproving || isApprovalLoading)) {
         setStep('approving');
-      } else {
+      } else if (!createTxHash && !approvalTxHash) {
         setStep('form');
       }
     }
-  }, [isConnected, isWhitelisted, isApproving, isCreating, approvalTxHash, createTxHash, approvalSuccess, createSuccess]);
+  }, [isConnected, isWhitelisted, isApproving, isCreating, approvalTxHash, createTxHash, approvalSuccess, createSuccess, isApprovalLoading, isCreateLoading]);
 
   // After approval succeeds, proceed to create
   useEffect(() => {
-    if (approvalSuccess && step === 'approving') {
+    if (approvalSuccess && !hasTriggeredCreate && !createTxHash) {
+      setHasTriggeredCreate(true);
       handleCreateCampaign();
     }
-  }, [approvalSuccess]);
+  }, [approvalSuccess, hasTriggeredCreate, createTxHash]);
 
   const decimals = tokenDecimals ?? 18;
 
