@@ -3,9 +3,9 @@
 import { useState, useCallback } from 'react';
 import { IDKitWidget, VerificationLevel, ISuccessResult } from '@worldcoin/idkit';
 import { type SerializedCampaign } from '@/lib/contracts';
-import { formatUnits } from 'viem';
+import { formatUnits, isAddress } from 'viem';
 
-type ClaimStep = 'select-level' | 'verify' | 'enter-recipient' | 'submitting' | 'success' | 'error';
+type ClaimStep = 'select-level' | 'enter-recipient' | 'verify' | 'submitting' | 'success' | 'error';
 
 interface ClaimFlowProps {
   campaign: SerializedCampaign;
@@ -29,6 +29,8 @@ export function ClaimFlow({ campaign, appId }: ClaimFlowProps) {
   const [verificationLevel, setVerificationLevel] = useState<'orb' | 'device' | null>(null);
   const [proofData, setProofData] = useState<ISuccessResult | null>(null);
   const [recipient, setRecipient] = useState('');
+  const [resolvedRecipient, setResolvedRecipient] = useState<`0x${string}` | null>(null);
+  const [isResolving, setIsResolving] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<ClaimResult | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -39,16 +41,53 @@ export function ClaimFlow({ campaign, appId }: ClaimFlowProps) {
 
   const handleSelectLevel = (level: 'orb' | 'device') => {
     setVerificationLevel(level);
-    setStep('verify');
+    setStep('enter-recipient');
+  };
+
+  const handleContinueToVerify = async () => {
+    if (!recipient.trim()) return;
+    
+    setIsResolving(true);
+    setError(null);
+    
+    try {
+      // If it's already a valid address, use it directly
+      if (isAddress(recipient)) {
+        setResolvedRecipient(recipient as `0x${string}`);
+        setStep('verify');
+        return;
+      }
+      
+      // Resolve username via API
+      const response = await fetch('/api/resolve-username', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: recipient }),
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok || !data.address) {
+        throw new Error(data.error || 'Could not resolve username');
+      }
+      
+      setResolvedRecipient(data.address as `0x${string}`);
+      setStep('verify');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to resolve address');
+    } finally {
+      setIsResolving(false);
+    }
   };
 
   const handleVerificationSuccess = useCallback((result: ISuccessResult) => {
     setProofData(result);
-    setStep('enter-recipient');
-  }, []);
+    // Now submit the claim automatically
+    handleSubmitClaimWithProof(result);
+  }, [recipient, verificationLevel, campaign]);
 
-  const handleSubmitClaim = async () => {
-    if (!proofData || !recipient || !verificationLevel) return;
+  const handleSubmitClaimWithProof = async (proof: ISuccessResult) => {
+    if (!recipient || !verificationLevel) return;
 
     setIsSubmitting(true);
     setStep('submitting');
@@ -62,9 +101,9 @@ export function ClaimFlow({ campaign, appId }: ClaimFlowProps) {
           campaignId: parseInt(campaign.id),
           chainId: campaign.chainId,
           recipient: recipient,
-          merkle_root: proofData.merkle_root,
-          nullifier_hash: proofData.nullifier_hash,
-          proof: proofData.proof,
+          merkle_root: proof.merkle_root,
+          nullifier_hash: proof.nullifier_hash,
+          proof: proof.proof,
           verification_level: verificationLevel,
         }),
       });
@@ -93,6 +132,7 @@ export function ClaimFlow({ campaign, appId }: ClaimFlowProps) {
     setVerificationLevel(null);
     setProofData(null);
     setRecipient('');
+    setResolvedRecipient(null);
     setResult(null);
     setError(null);
   };
@@ -172,8 +212,8 @@ export function ClaimFlow({ campaign, appId }: ClaimFlowProps) {
         </div>
       )}
 
-      {/* Step: Verify with World ID */}
-      {step === 'verify' && verificationLevel && (
+      {/* Step: Enter Recipient */}
+      {step === 'enter-recipient' && verificationLevel && (
         <div>
           <button
             onClick={() => setStep('select-level')}
@@ -182,16 +222,72 @@ export function ClaimFlow({ campaign, appId }: ClaimFlowProps) {
             ← Back
           </button>
 
+          <h3 className="text-xl font-semibold mb-4">Where should we send your tokens?</h3>
+          <p className="text-gray-400 mb-6">
+            Enter your World ID username or wallet address.
+          </p>
+
+          <div className="space-y-4">
+            <input
+              type="text"
+              value={recipient}
+              onChange={(e) => {
+                setRecipient(e.target.value);
+                setError(null);
+              }}
+              placeholder="@username or 0x..."
+              className="input"
+              autoFocus
+            />
+
+            {error && (
+              <p className="text-red-500 text-sm">{error}</p>
+            )}
+
+            <button
+              onClick={handleContinueToVerify}
+              disabled={!recipient.trim() || isResolving}
+              className="btn-primary w-full"
+            >
+              {isResolving ? 'Resolving...' : 'Continue to Verification'}
+            </button>
+          </div>
+
+          <p className="text-xs text-gray-500 mt-4">
+            World ID usernames are resolved via ENS. You can also enter any Ethereum address.
+          </p>
+
+          <div className="mt-6 p-4 bg-dark-bg rounded-xl">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-400">You will receive:</span>
+              <span className="font-semibold">
+                {formatTokenAmount(claimAmount, campaign.tokenDecimals)} {campaign.tokenSymbol}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Step: Verify with World ID */}
+      {step === 'verify' && verificationLevel && resolvedRecipient && (
+        <div>
+          <button
+            onClick={() => setStep('enter-recipient')}
+            className="text-gray-400 hover:text-white mb-4 flex items-center gap-1 text-sm"
+          >
+            ← Back
+          </button>
+
           <h3 className="text-xl font-semibold mb-4">Verify with World ID</h3>
           <p className="text-gray-400 mb-6">
-            Scan the QR code with your World App to verify your humanity.
+            Scan the QR code with your World App to verify and claim your tokens.
           </p>
 
           <div className="flex justify-center">
             <IDKitWidget
               app_id={appId as `app_${string}`}
-              action={`claim`}
-              signal={`${campaign.chainId}-${campaign.id}-${recipient || '0x0000000000000000000000000000000000000000'}`}
+              action="claim"
+              signal={resolvedRecipient}
               verification_level={
                 verificationLevel === 'orb' 
                   ? VerificationLevel.Orb 
@@ -213,7 +309,13 @@ export function ClaimFlow({ campaign, appId }: ClaimFlowProps) {
             </IDKitWidget>
           </div>
 
-          <div className="mt-6 p-4 bg-dark-bg rounded-xl">
+          <div className="mt-6 p-4 bg-dark-bg rounded-xl space-y-2">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-400">Sending to:</span>
+              <span className="font-mono text-xs">
+                {resolvedRecipient.slice(0, 6)}...{resolvedRecipient.slice(-4)}
+              </span>
+            </div>
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-400">You will receive:</span>
               <span className="font-semibold">
@@ -221,55 +323,6 @@ export function ClaimFlow({ campaign, appId }: ClaimFlowProps) {
               </span>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* Step: Enter Recipient */}
-      {step === 'enter-recipient' && (
-        <div>
-          <button
-            onClick={() => setStep('verify')}
-            className="text-gray-400 hover:text-white mb-4 flex items-center gap-1 text-sm"
-          >
-            ← Back
-          </button>
-
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center">
-              <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <span className="text-green-500 font-medium">Verified!</span>
-          </div>
-
-          <h3 className="text-xl font-semibold mb-4">Where should we send your tokens?</h3>
-          <p className="text-gray-400 mb-6">
-            Enter your World ID username or wallet address.
-          </p>
-
-          <div className="space-y-4">
-            <input
-              type="text"
-              value={recipient}
-              onChange={(e) => setRecipient(e.target.value)}
-              placeholder="@username or 0x..."
-              className="input"
-              autoFocus
-            />
-
-            <button
-              onClick={handleSubmitClaim}
-              disabled={!recipient.trim()}
-              className="btn-primary w-full"
-            >
-              Claim {formatTokenAmount(claimAmount, campaign.tokenDecimals)} {campaign.tokenSymbol}
-            </button>
-          </div>
-
-          <p className="text-xs text-gray-500 mt-4">
-            World ID usernames are resolved via ENS. You can also enter any Ethereum address.
-          </p>
         </div>
       )}
 
