@@ -136,6 +136,23 @@ export async function POST(request: NextRequest): Promise<NextResponse<ClaimResp
     const root = BigInt(body.merkle_root);
     const nullifierHash = BigInt(body.nullifier_hash);
 
+    // DEBUG: Log all values for troubleshooting
+    console.log('=== CLAIM DEBUG ===' );
+    console.log('campaignId:', body.campaignId);
+    console.log('recipient:', recipientAddress);
+    console.log('signalString:', body.signalString);
+    console.log('signalString length:', body.signalString.length);
+    console.log('merkle_root (raw):', body.merkle_root);
+    console.log('root (bigint):', root.toString());
+    console.log('nullifier_hash (raw):', body.nullifier_hash);
+    console.log('nullifierHash (bigint):', nullifierHash.toString());
+    console.log('proof (raw):', body.proof);
+    console.log('proof (raw) length:', body.proof.length);
+    console.log('proof (parsed):', proof.map(p => p.toString()));
+    console.log('groupId:', groupId.toString());
+    console.log('verification_level:', body.verification_level);
+    console.log('=== END DEBUG ===');
+
     // Submit the claim transaction
     // signalString must match exactly what was passed to IDKit
     const txHash = await submitClaim(
