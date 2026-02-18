@@ -16,8 +16,7 @@ import { getExplorerTxUrl } from '@/lib/chains';
 interface ClaimRequest {
   campaignId: number;
   chainId: number;
-  recipient: string; // Wallet address (already resolved)
-  signalString: string; // The exact signal string passed to IDKit (address with 0x prefix)
+  recipient: string; // Wallet address (already resolved) - also used as signal
   // World ID proof fields (from IDKit)
   merkle_root: string;
   nullifier_hash: string;
@@ -88,9 +87,6 @@ export async function POST(request: NextRequest): Promise<NextResponse<ClaimResp
     if (!body.recipient) {
       return NextResponse.json({ success: false, error: 'Missing recipient' }, { status: 400 });
     }
-    if (!body.signalString) {
-      return NextResponse.json({ success: false, error: 'Missing signalString' }, { status: 400 });
-    }
     if (!body.merkle_root) {
       return NextResponse.json({ success: false, error: 'Missing merkle_root' }, { status: 400 });
     }
@@ -139,9 +135,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ClaimResp
     // DEBUG: Log all values for troubleshooting
     console.log('=== CLAIM DEBUG ===' );
     console.log('campaignId:', body.campaignId);
-    console.log('recipient:', recipientAddress);
-    console.log('signalString:', body.signalString);
-    console.log('signalString length:', body.signalString.length);
+    console.log('recipient (signal):', recipientAddress);
     console.log('merkle_root (raw):', body.merkle_root);
     console.log('root (bigint):', root.toString());
     console.log('nullifier_hash (raw):', body.nullifier_hash);
@@ -154,12 +148,11 @@ export async function POST(request: NextRequest): Promise<NextResponse<ClaimResp
     console.log('=== END DEBUG ===');
 
     // Submit the claim transaction
-    // signalString must match exactly what was passed to IDKit
+    // Signal is the recipient address - IDKit hashes "0x..." as 20-byte address
     const txHash = await submitClaim(
       chainId,
       BigInt(body.campaignId),
       recipientAddress,
-      body.signalString,
       root,
       nullifierHash,
       proof,

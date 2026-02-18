@@ -101,8 +101,7 @@ export function ClaimFlow({ campaign, appId }: ClaimFlowProps) {
         body: JSON.stringify({
           campaignId: parseInt(campaign.id),
           chainId: campaign.chainId,
-          recipient: resolvedRecipient,
-          signalString: resolvedRecipient, // Must match exactly what was passed to IDKit
+          recipient: resolvedRecipient, // Also used as signal - IDKit hashes as 20-byte address
           merkle_root: proof.merkle_root,
           nullifier_hash: proof.nullifier_hash,
           proof: proof.proof,

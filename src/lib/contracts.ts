@@ -62,7 +62,6 @@ export const FREE_FOR_HUMANS_ABI = [
     inputs: [
       { name: 'campaignId', type: 'uint256' },
       { name: 'recipient', type: 'address' },
-      { name: 'signalString', type: 'string' },
       { name: 'root', type: 'uint256' },
       { name: 'nullifierHash', type: 'uint256' },
       { name: 'proof', type: 'uint256[8]' },

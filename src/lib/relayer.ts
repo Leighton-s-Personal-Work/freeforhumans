@@ -83,13 +83,12 @@ export function getRelayerAddress(): `0x${string}` {
 
 /**
  * Submit a claim transaction
- * @param signalString The signal string used in IDKit (address with 0x prefix, as passed to IDKit)
+ * The signal is the recipient address - IDKit hashes "0x..." addresses as 20-byte hex
  */
 export async function submitClaim(
   chainId: SupportedChainId,
   campaignId: bigint,
   recipient: `0x${string}`,
-  signalString: string,
   root: bigint,
   nullifierHash: bigint,
   proof: readonly [bigint, bigint, bigint, bigint, bigint, bigint, bigint, bigint],
@@ -104,7 +103,7 @@ export async function submitClaim(
     address: config.contractAddress,
     abi: FREE_FOR_HUMANS_ABI,
     functionName: 'claim',
-    args: [campaignId, recipient, signalString, root, nullifierHash, proof, groupId],
+    args: [campaignId, recipient, root, nullifierHash, proof, groupId],
     account: getRelayerAccount(),
   });
 

@@ -274,8 +274,7 @@ contract FreeForHumans is Ownable, Pausable, ReentrancyGuard {
     /// @notice Claims tokens from a campaign with World ID verification
     /// @dev Called by relayer on behalf of users
     /// @param campaignId The campaign to claim from
-    /// @param recipient Where to send tokens
-    /// @param signalString The signal string used in IDKit (address with 0x prefix)
+    /// @param recipient Where to send tokens (also used as the signal for World ID verification)
     /// @param root Merkle root from IDKit
     /// @param nullifierHash Nullifier hash from IDKit
     /// @param proof Zero-knowledge proof from IDKit
@@ -283,7 +282,6 @@ contract FreeForHumans is Ownable, Pausable, ReentrancyGuard {
     function claim(
         uint256 campaignId,
         address recipient,
-        string calldata signalString,
         uint256 root,
         uint256 nullifierHash,
         uint256[8] calldata proof,
@@ -324,11 +322,12 @@ contract FreeForHumans is Ownable, Pausable, ReentrancyGuard {
 
         // Verify the World ID proof
         // External nullifier is pre-computed from app_id + action
-        // Signal hash must match what IDKit generates (hashes the string, not address bytes)
+        // Signal hash: IDKit recognizes "0x..." as hex and hashes the address bytes (20 bytes)
+        // So we hash the recipient address directly, matching what IDKit does
         worldIdRouter.verifyProof(
             root,
             groupId,
-            abi.encodePacked(signalString).hashToField(),
+            abi.encodePacked(recipient).hashToField(),
             nullifierHash,
             externalNullifierHash,
             proof
