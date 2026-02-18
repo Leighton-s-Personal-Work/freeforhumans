@@ -2,6 +2,7 @@ import {
   createWalletClient,
   createPublicClient,
   http,
+  decodeAbiParameters,
   type WalletClient,
   type PublicClient,
   type Account,
@@ -210,21 +211,20 @@ export async function getRelayerBalance(chainId: SupportedChainId): Promise<bigi
 
 /**
  * Parse proof from IDKit format to contract format
- * IDKit returns proof as a hex string that needs to be decoded
+ * IDKit returns proof as an ABI-encoded hex string that needs to be decoded
+ * See: https://docs.world.org/world-id/reference/contracts
  */
 export function parseProof(proofString: string): readonly [bigint, bigint, bigint, bigint, bigint, bigint, bigint, bigint] {
-  // IDKit proof is a packed hex string of 8 uint256 values
-  // Remove 0x prefix if present
-  const hex = proofString.startsWith('0x') ? proofString.slice(2) : proofString;
+  // IDKit proof is ABI-encoded as uint256[8]
+  // We need to decode it using ABI decoding, not raw hex slicing
+  const proofHex = proofString.startsWith('0x') ? proofString : `0x${proofString}`;
   
-  // Each uint256 is 64 hex characters (32 bytes)
-  const proof: bigint[] = [];
-  for (let i = 0; i < 8; i++) {
-    const chunk = hex.slice(i * 64, (i + 1) * 64);
-    proof.push(BigInt('0x' + chunk));
-  }
+  const decoded = decodeAbiParameters(
+    [{ type: 'uint256[8]' }],
+    proofHex as `0x${string}`
+  );
   
-  return proof as unknown as readonly [bigint, bigint, bigint, bigint, bigint, bigint, bigint, bigint];
+  return decoded[0] as readonly [bigint, bigint, bigint, bigint, bigint, bigint, bigint, bigint];
 }
 
 /**
