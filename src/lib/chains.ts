@@ -46,6 +46,11 @@ export const base: Chain = {
 
 export type SupportedChainId = 480 | 8453;
 
+// Contract addresses - these are public and can be hardcoded
+// Updated after redeployment on 2024-02-18
+const WORLD_CHAIN_CONTRACT = '0xA749A8E01Ebc3dc15C5281799534C5c4799FB84e' as const;
+const BASE_CONTRACT = '0xA749A8E01Ebc3dc15C5281799534C5c4799FB84e' as const;
+
 export const CHAIN_CONFIG: Record<SupportedChainId, {
   chain: Chain;
   name: string;
@@ -56,14 +61,14 @@ export const CHAIN_CONFIG: Record<SupportedChainId, {
   480: {
     chain: worldchain,
     name: 'World Chain',
-    contractAddress: (process.env.WORLD_CHAIN_CONTRACT_ADDRESS || '0x0000000000000000000000000000000000000000') as `0x${string}`,
-    worldIdRouter: (process.env.WORLD_CHAIN_WORLD_ID_ROUTER || '0x0000000000000000000000000000000000000000') as `0x${string}`,
+    contractAddress: WORLD_CHAIN_CONTRACT,
+    worldIdRouter: '0x57f928158C3EE7CDad1e4D8642503c4D0201f611',
     explorerUrl: 'https://worldscan.org',
   },
   8453: {
     chain: base,
     name: 'Base',
-    contractAddress: (process.env.BASE_CONTRACT_ADDRESS || '0x0000000000000000000000000000000000000000') as `0x${string}`,
+    contractAddress: BASE_CONTRACT,
     worldIdRouter: '0xBCC7e5910178AFFEEeBA573ba6903E9869594163',
     explorerUrl: 'https://basescan.org',
   },
