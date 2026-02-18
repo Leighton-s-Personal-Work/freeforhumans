@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { IDKitWidget, VerificationLevel, ISuccessResult } from '@worldcoin/idkit';
 import { type SerializedCampaign } from '@/lib/contracts';
 import { formatUnits, isAddress } from 'viem';
@@ -25,6 +25,14 @@ function formatTokenAmount(amount: string, decimals: number = 18): string {
 }
 
 export function ClaimFlow({ campaign, appId }: ClaimFlowProps) {
+  // DEBUG: Log app_id on mount
+  useEffect(() => {
+    console.log('=== IDKIT DEBUG (from ClaimFlow) ===');
+    console.log('appId prop:', appId);
+    console.log('process.env.NEXT_PUBLIC_WORLD_APP_ID:', process.env.NEXT_PUBLIC_WORLD_APP_ID);
+    console.log('action: claim');
+  }, [appId]);
+
   const [step, setStep] = useState<ClaimStep>('select-level');
   const [verificationLevel, setVerificationLevel] = useState<'orb' | 'device' | null>(null);
   const [proofData, setProofData] = useState<ISuccessResult | null>(null);
