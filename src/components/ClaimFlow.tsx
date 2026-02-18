@@ -285,6 +285,8 @@ export function ClaimFlow({ campaign, appId }: ClaimFlowProps) {
           </p>
 
           <div className="flex justify-center">
+            {/* DEBUG: Log what's being passed to IDKit */}
+            {console.log('=== IDKIT DEBUG ===', { appId, action: 'claim', signal: resolvedRecipient })}
             <IDKitWidget
               app_id={appId as `app_${string}`}
               action="claim"
@@ -308,6 +310,11 @@ export function ClaimFlow({ campaign, appId }: ClaimFlowProps) {
                 </button>
               )}
             </IDKitWidget>
+          </div>
+
+          {/* DEBUG: Show app_id visually */}
+          <div className="mt-4 p-2 bg-yellow-500/20 rounded text-xs font-mono text-yellow-300">
+            DEBUG: app_id = {appId}
           </div>
 
           <div className="mt-6 p-4 bg-dark-bg rounded-xl space-y-2">
