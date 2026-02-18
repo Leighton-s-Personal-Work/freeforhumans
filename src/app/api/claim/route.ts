@@ -136,6 +136,18 @@ export async function POST(request: NextRequest): Promise<NextResponse<ClaimResp
     console.log('=== CLAIM DEBUG ===' );
     console.log('campaignId:', body.campaignId);
     console.log('recipient (signal):', recipientAddress);
+    
+    // Compute what signalHash the CONTRACT will produce (address = 20 bytes)
+    const { keccak256, toBytes } = await import('viem');
+    const addressBytes = toBytes(recipientAddress);  // 20 bytes
+    const contractSignalHash = BigInt(keccak256(addressBytes)) >> 8n;
+    console.log('CONTRACT signalHash (20 bytes):', contractSignalHash.toString());
+    
+    // Also compute what it would be as a string (42 bytes) for comparison
+    const stringBytes = new TextEncoder().encode(recipientAddress);  // 42 bytes
+    const stringSignalHash = BigInt(keccak256(stringBytes)) >> 8n;
+    console.log('STRING signalHash (42 bytes):', stringSignalHash.toString());
+    
     console.log('merkle_root (raw):', body.merkle_root);
     console.log('root (bigint):', root.toString());
     console.log('nullifier_hash (raw):', body.nullifier_hash);
