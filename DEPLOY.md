@@ -3,9 +3,10 @@
 ## Prerequisites
 
 1. **Funded deployer wallet** with ETH on both chains:
-   - Your wallet: `0x9c7EADDd6235e68D27D6f037C79eaa039Fa57389`
+   - Create a wallet with `cast wallet new`
    - Fund with ~0.01 ETH on World Chain
    - Fund with ~0.01 ETH on Base
+   - **NEVER commit your private key to git**
 
 2. **World ID App** registered at https://developer.worldcoin.org
    - Create a new app (set as "on-chain" type)
@@ -26,9 +27,9 @@ cp .env.example .env
 
 Edit `.env` with:
 ```
-DEPLOYER_PRIVATE_KEY=0x0a25fa0703af78ecc790646083588d9ea971985bf6829b3f75b3f7324add210a
+DEPLOYER_PRIVATE_KEY=<your_private_key>  # NEVER commit this!
 WORLD_APP_ID=<your_numeric_app_id>
-RELAYER_ADDRESS=0x9c7EADDd6235e68D27D6f037C79eaa039Fa57389
+RELAYER_ADDRESS=<your_wallet_address>
 ```
 
 Note: For simplicity, the relayer can be the same address as the deployer. This wallet will pay gas for user claims.
@@ -83,7 +84,7 @@ Create `.env.local`:
 NEXT_PUBLIC_WORLD_APP_ID=app_<your_app_id>
 
 # Relayer (same key used for deployment, pays gas for claims)
-RELAYER_PRIVATE_KEY=0x0a25fa0703af78ecc790646083588d9ea971985bf6829b3f75b3f7324add210a
+RELAYER_PRIVATE_KEY=<your_private_key>  # Set in Vercel env vars, NEVER commit!
 
 # Contract addresses (from deployment)
 WORLD_CHAIN_CONTRACT_ADDRESS=<deployed_address_on_world_chain>
