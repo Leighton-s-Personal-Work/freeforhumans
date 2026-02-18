@@ -16,7 +16,8 @@ import { getExplorerTxUrl } from '@/lib/chains';
 interface ClaimRequest {
   campaignId: number;
   chainId: number;
-  recipient: string; // Wallet address or World ID username (name.world.id)
+  recipient: string; // Wallet address (already resolved)
+  signalString: string; // The exact signal string passed to IDKit (address with 0x prefix)
   // World ID proof fields (from IDKit)
   merkle_root: string;
   nullifier_hash: string;
@@ -87,6 +88,9 @@ export async function POST(request: NextRequest): Promise<NextResponse<ClaimResp
     if (!body.recipient) {
       return NextResponse.json({ success: false, error: 'Missing recipient' }, { status: 400 });
     }
+    if (!body.signalString) {
+      return NextResponse.json({ success: false, error: 'Missing signalString' }, { status: 400 });
+    }
     if (!body.merkle_root) {
       return NextResponse.json({ success: false, error: 'Missing merkle_root' }, { status: 400 });
     }
@@ -118,16 +122,11 @@ export async function POST(request: NextRequest): Promise<NextResponse<ClaimResp
       return NextResponse.json({ success: false, error: 'Campaign has expired' }, { status: 400 });
     }
 
-    // Resolve recipient address
-    let recipientAddress: `0x${string}`;
-    try {
-      recipientAddress = await resolveRecipient(body.recipient);
-    } catch (error) {
-      return NextResponse.json({ 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Failed to resolve recipient' 
-      }, { status: 400 });
+    // Validate recipient address (should already be resolved by frontend)
+    if (!isAddress(body.recipient)) {
+      return NextResponse.json({ success: false, error: 'Invalid recipient address' }, { status: 400 });
     }
+    const recipientAddress = body.recipient as `0x${string}`;
 
     // Parse proof and get groupId
     const proof = parseProof(body.proof);
@@ -138,10 +137,12 @@ export async function POST(request: NextRequest): Promise<NextResponse<ClaimResp
     const nullifierHash = BigInt(body.nullifier_hash);
 
     // Submit the claim transaction
+    // signalString must match exactly what was passed to IDKit
     const txHash = await submitClaim(
       chainId,
       BigInt(body.campaignId),
       recipientAddress,
+      body.signalString,
       root,
       nullifierHash,
       proof,

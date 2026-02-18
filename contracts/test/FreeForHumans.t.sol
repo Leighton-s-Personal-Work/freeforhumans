@@ -317,7 +317,7 @@ contract FreeForHumansTest is Test {
 
         // Perform a claim first
         vm.prank(relayer);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 1);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 1);
 
         uint256 expectedReturn = TOTAL_BUDGET - ORB_CLAIM_AMOUNT;
 
@@ -361,7 +361,7 @@ contract FreeForHumansTest is Test {
         vm.prank(relayer);
         vm.expectEmit(true, true, false, true);
         emit TokensClaimed(campaignId, recipient, ORB_CLAIM_AMOUNT, 1, NULLIFIER_HASH);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 1);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 1);
 
         assertEq(token.balanceOf(recipient), ORB_CLAIM_AMOUNT);
 
@@ -373,11 +373,11 @@ contract FreeForHumansTest is Test {
         uint256 campaignId = _createBasicCampaign();
 
         vm.prank(relayer);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 1);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 1);
 
         vm.prank(relayer);
         vm.expectRevert(FreeForHumans.AlreadyClaimed.selector);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 1);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 1);
     }
 
     // ============ Claim Tests - NFC (Group 2) ============
@@ -388,7 +388,7 @@ contract FreeForHumansTest is Test {
         vm.prank(relayer);
         vm.expectEmit(true, true, false, true);
         emit TokensClaimed(campaignId, recipient, NFC_CLAIM_AMOUNT, 2, NULLIFIER_HASH);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 2);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 2);
 
         assertEq(token.balanceOf(recipient), NFC_CLAIM_AMOUNT);
     }
@@ -397,11 +397,11 @@ contract FreeForHumansTest is Test {
         uint256 campaignId = _createBasicCampaign();
 
         vm.prank(relayer);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 2);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 2);
 
         vm.prank(relayer);
         vm.expectRevert(FreeForHumans.AlreadyClaimed.selector);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 2);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 2);
     }
 
     // ============ Claim Tests - Cross-Group ============
@@ -411,10 +411,10 @@ contract FreeForHumansTest is Test {
 
         // Same nullifier can claim as both Orb and NFC (different groupIds)
         vm.prank(relayer);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 1);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 1);
 
         vm.prank(relayer);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 2);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 2);
 
         assertEq(token.balanceOf(recipient), ORB_CLAIM_AMOUNT + NFC_CLAIM_AMOUNT);
     }
@@ -426,11 +426,11 @@ contract FreeForHumansTest is Test {
 
         vm.prank(relayer);
         vm.expectRevert(FreeForHumans.InvalidGroupId.selector);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 0);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 0);
 
         vm.prank(relayer);
         vm.expectRevert(FreeForHumans.InvalidGroupId.selector);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 3);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 3);
     }
 
     // ============ Claim Tests - Campaign Validation ============
@@ -440,13 +440,13 @@ contract FreeForHumansTest is Test {
 
         vm.prank(nonWhitelisted);
         vm.expectRevert(FreeForHumans.OnlyRelayer.selector);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 1);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 1);
     }
 
     function test_claim_revertsCampaignNotFound() public {
         vm.prank(relayer);
         vm.expectRevert(FreeForHumans.CampaignNotFound.selector);
-        freeForHumans.claim(999, recipient, ROOT, NULLIFIER_HASH, proof, 1);
+        freeForHumans.claim(999, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 1);
     }
 
     function test_claim_revertsCampaignNotActive() public {
@@ -457,7 +457,7 @@ contract FreeForHumansTest is Test {
 
         vm.prank(relayer);
         vm.expectRevert(FreeForHumans.CampaignNotActive.selector);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 1);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 1);
     }
 
     function test_claim_revertsCampaignExpired() public {
@@ -467,7 +467,7 @@ contract FreeForHumansTest is Test {
 
         vm.prank(relayer);
         vm.expectRevert(FreeForHumans.CampaignExpired.selector);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 1);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 1);
     }
 
     function test_claim_revertsInsufficientBudget() public {
@@ -482,12 +482,12 @@ contract FreeForHumansTest is Test {
 
         // First claim succeeds
         vm.prank(relayer);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 1);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 1);
 
         // Second claim fails
         vm.prank(relayer);
         vm.expectRevert(FreeForHumans.InsufficientBudget.selector);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH + 1, proof, 1);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH + 1, proof, 1);
     }
 
     function test_claim_revertsWhenPaused() public {
@@ -496,7 +496,7 @@ contract FreeForHumansTest is Test {
 
         vm.prank(relayer);
         vm.expectRevert(abi.encodeWithSignature("EnforcedPause()"));
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 1);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 1);
     }
 
     function test_claim_revertsOnWorldIdFailure() public {
@@ -505,7 +505,7 @@ contract FreeForHumansTest is Test {
 
         vm.prank(relayer);
         vm.expectRevert("Invalid proof");
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 1);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 1);
     }
 
     // ============ Recurring Campaign Tests ============
@@ -514,7 +514,7 @@ contract FreeForHumansTest is Test {
         uint256 campaignId = _createRecurringCampaign();
 
         vm.prank(relayer);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 1);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 1);
 
         assertEq(token.balanceOf(recipient), ORB_CLAIM_AMOUNT);
     }
@@ -523,19 +523,19 @@ contract FreeForHumansTest is Test {
         uint256 campaignId = _createRecurringCampaign();
 
         vm.prank(relayer);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 1);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 1);
 
         // Try to claim again immediately
         vm.prank(relayer);
         vm.expectRevert(FreeForHumans.ClaimIntervalNotPassed.selector);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 1);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 1);
 
         // Warp time forward
         vm.warp(block.timestamp + ONE_DAY);
 
         // Now should succeed
         vm.prank(relayer);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 1);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 1);
 
         assertEq(token.balanceOf(recipient), ORB_CLAIM_AMOUNT * 2);
     }
@@ -545,11 +545,11 @@ contract FreeForHumansTest is Test {
 
         // Claim as Orb
         vm.prank(relayer);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 1);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 1);
 
         // Should still be able to claim as NFC (different groupId)
         vm.prank(relayer);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 2);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 2);
 
         assertEq(token.balanceOf(recipient), ORB_CLAIM_AMOUNT + NFC_CLAIM_AMOUNT);
     }
@@ -567,12 +567,12 @@ contract FreeForHumansTest is Test {
 
         // Orb claim succeeds
         vm.prank(relayer);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 1);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 1);
 
         // NFC claim fails
         vm.prank(relayer);
         vm.expectRevert(FreeForHumans.InvalidClaimAmounts.selector);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH + 1, proof, 2);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH + 1, proof, 2);
     }
 
     // ============ Admin Function Tests ============
@@ -647,7 +647,7 @@ contract FreeForHumansTest is Test {
         assertEq(freeForHumans.getRemainingBudget(campaignId), TOTAL_BUDGET);
 
         vm.prank(relayer);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 1);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 1);
 
         assertEq(freeForHumans.getRemainingBudget(campaignId), TOTAL_BUDGET - ORB_CLAIM_AMOUNT);
     }
@@ -660,7 +660,7 @@ contract FreeForHumansTest is Test {
         assertEq(nextTime, 0);
 
         vm.prank(relayer);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 1);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 1);
 
         (eligible, nextTime) = freeForHumans.canClaim(NULLIFIER_HASH, campaignId, 1);
         assertFalse(eligible);
@@ -674,7 +674,7 @@ contract FreeForHumansTest is Test {
         assertEq(nextTime, 0);
 
         vm.prank(relayer);
-        freeForHumans.claim(campaignId, recipient, ROOT, NULLIFIER_HASH, proof, 1);
+        freeForHumans.claim(campaignId, recipient, "0x0000000000000000000000000000000000000003", ROOT, NULLIFIER_HASH, proof, 1);
 
         (eligible, nextTime) = freeForHumans.canClaim(NULLIFIER_HASH, campaignId, 1);
         assertFalse(eligible);

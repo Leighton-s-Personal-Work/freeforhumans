@@ -87,7 +87,7 @@ export function ClaimFlow({ campaign, appId }: ClaimFlowProps) {
   }, [recipient, verificationLevel, campaign]);
 
   const handleSubmitClaimWithProof = async (proof: ISuccessResult) => {
-    if (!recipient || !verificationLevel) return;
+    if (!recipient || !verificationLevel || !resolvedRecipient) return;
 
     setIsSubmitting(true);
     setStep('submitting');
@@ -100,7 +100,8 @@ export function ClaimFlow({ campaign, appId }: ClaimFlowProps) {
         body: JSON.stringify({
           campaignId: parseInt(campaign.id),
           chainId: campaign.chainId,
-          recipient: recipient,
+          recipient: resolvedRecipient,
+          signalString: resolvedRecipient, // Must match exactly what was passed to IDKit
           merkle_root: proof.merkle_root,
           nullifier_hash: proof.nullifier_hash,
           proof: proof.proof,
