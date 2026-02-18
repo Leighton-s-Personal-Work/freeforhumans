@@ -80,15 +80,16 @@ export function ClaimFlow({ campaign, appId }: ClaimFlowProps) {
     }
   };
 
-  const handleVerificationSuccess = useCallback((result: ISuccessResult) => {
-    setProofData(result);
-    // Now submit the claim automatically
-    handleSubmitClaimWithProof(result);
-  }, [recipient, verificationLevel, campaign]);
+  const handleVerificationSuccess = useCallback(async (proof: ISuccessResult) => {
+    // All values needed are captured in this closure
+    if (!resolvedRecipient || !verificationLevel) {
+      console.error('Missing resolvedRecipient or verificationLevel');
+      setError('Missing recipient information');
+      setStep('error');
+      return;
+    }
 
-  const handleSubmitClaimWithProof = async (proof: ISuccessResult) => {
-    if (!recipient || !verificationLevel || !resolvedRecipient) return;
-
+    setProofData(proof);
     setIsSubmitting(true);
     setStep('submitting');
     setError(null);
@@ -126,7 +127,7 @@ export function ClaimFlow({ campaign, appId }: ClaimFlowProps) {
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [resolvedRecipient, verificationLevel, campaign]);
 
   const handleReset = () => {
     setStep('select-level');
