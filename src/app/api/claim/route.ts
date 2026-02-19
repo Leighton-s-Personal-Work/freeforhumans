@@ -180,7 +180,14 @@ export async function POST(request: NextRequest): Promise<NextResponse<ClaimResp
     });
 
   } catch (error) {
-    console.error('Claim error:', error);
+    console.error('=== CLAIM API ERROR ===');
+    console.error('Full error:', error);
+    console.error('Error type:', error?.constructor?.name);
+    if (error instanceof Error) {
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+      if ('cause' in error) console.error('Error cause:', error.cause);
+    }
     
     // Extract error message
     let errorMessage = 'Failed to submit claim';

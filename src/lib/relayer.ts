@@ -98,22 +98,50 @@ export async function submitClaim(
   const walletClient = getWalletClient(chainId);
   const config = CHAIN_CONFIG[chainId];
 
-  // Simulate first to catch errors
-  const { request } = await publicClient.simulateContract({
-    address: config.contractAddress,
-    abi: FREE_FOR_HUMANS_ABI,
-    functionName: 'claim',
-    args: [campaignId, recipient, root, nullifierHash, proof, groupId],
-    account: getRelayerAccount(),
+  console.log('=== RELAYER submitClaim ===');
+  console.log('chainId:', chainId);
+  console.log('contractAddress:', config.contractAddress);
+  console.log('relayer:', getRelayerAccount().address);
+  console.log('args:', {
+    campaignId: campaignId.toString(),
+    recipient,
+    root: root.toString(),
+    nullifierHash: nullifierHash.toString(),
+    proof: proof.map(p => p.toString()),
+    groupId: groupId.toString(),
   });
 
-  // Submit transaction
-  const txHash = await walletClient.writeContract(request);
+  // Simulate first to catch errors
+  try {
+    const { request } = await publicClient.simulateContract({
+      address: config.contractAddress,
+      abi: FREE_FOR_HUMANS_ABI,
+      functionName: 'claim',
+      args: [campaignId, recipient, root, nullifierHash, proof, groupId],
+      account: getRelayerAccount(),
+    });
+    console.log('Simulation succeeded, submitting tx...');
 
-  // Wait for confirmation
-  await publicClient.waitForTransactionReceipt({ hash: txHash });
+    // Submit transaction
+    const txHash = await walletClient.writeContract(request);
 
-  return txHash;
+    // Wait for confirmation
+    await publicClient.waitForTransactionReceipt({ hash: txHash });
+    console.log('Transaction confirmed:', txHash);
+
+    return txHash;
+  } catch (error: unknown) {
+    console.error('=== RELAYER ERROR ===');
+    console.error('Error type:', error?.constructor?.name);
+    console.error('Error message:', error instanceof Error ? error.message : String(error));
+    if (error && typeof error === 'object' && 'cause' in error) {
+      console.error('Error cause:', error.cause);
+    }
+    if (error && typeof error === 'object' && 'details' in error) {
+      console.error('Error details:', (error as { details?: unknown }).details);
+    }
+    throw error;
+  }
 }
 
 /**
