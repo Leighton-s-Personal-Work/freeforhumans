@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   title: 'FreeForHumans — Free things for real humans',
   description: 'Verified humans claim free things. No bots. No catch. Powered by World ID.',
   keywords: ['World ID', 'free gold', 'verified humans', 'proof of personhood', 'XAUT'],
+  icons: {
+    icon: '/icon.svg',
+  },
   openGraph: {
     title: 'FreeForHumans',
     description: 'Free things for real humans. Prove you\'re human. Get free stuff.',
