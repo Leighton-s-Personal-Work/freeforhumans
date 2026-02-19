@@ -165,10 +165,9 @@ export default async function HomePage() {
       <section className="pb-10 text-center">
         <a
           href="/get-verified"
-          className="inline-block text-sm font-medium text-gray-400 hover:text-gray-600 transition-colors"
+          className="btn-primary inline-block text-sm py-2.5 px-6"
         >
-          Don&apos;t have World App? →{' '}
-          <span className="underline">Get verified</span>
+          Don&apos;t have the World App?
         </a>
       </section>
 
