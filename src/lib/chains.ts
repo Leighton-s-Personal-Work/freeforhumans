@@ -46,10 +46,13 @@ export const base: Chain = {
 
 export type SupportedChainId = 480 | 8453;
 
-// Contract addresses - these are public and can be hardcoded
-// Updated after redeployment on 2026-02-18 (fixed World ID hashing to match IDKit protocol)
-const WORLD_CHAIN_CONTRACT = '0xe60cb892073386F6b92eBdc267eCE818C633c2F3' as const;
-const BASE_CONTRACT = '0xe60cb892073386F6b92eBdc267eCE818C633c2F3' as const;
+// Contract addresses - can be overridden via env vars for testing
+// Production (app_70a008e9fcd1d01ec35fb6e64f736a70):
+//   World Chain: 0xb08FB3DD699988EF51402dB69DFB9A7BCeD802e4
+//   Base: 0x36A9dD08A1703e63139DFaa3FFA6C6a44f47AA09
+// Use NEXT_PUBLIC_ prefix so they're available client-side
+const WORLD_CHAIN_CONTRACT = (process.env.NEXT_PUBLIC_WORLD_CHAIN_CONTRACT_ADDRESS || '0xb08FB3DD699988EF51402dB69DFB9A7BCeD802e4') as `0x${string}`;
+const BASE_CONTRACT = (process.env.NEXT_PUBLIC_BASE_CONTRACT_ADDRESS || '0x36A9dD08A1703e63139DFaa3FFA6C6a44f47AA09') as `0x${string}`;
 
 export const CHAIN_CONFIG: Record<SupportedChainId, {
   chain: Chain;
