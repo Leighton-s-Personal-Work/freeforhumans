@@ -161,6 +161,17 @@ export default async function HomePage() {
         </section>
       )}
 
+      {/* ======== GET VERIFIED CTA ======== */}
+      <section className="pb-10 text-center">
+        <a
+          href="/get-verified"
+          className="inline-block text-sm font-medium text-gray-400 hover:text-gray-600 transition-colors"
+        >
+          Don&apos;t have World App? →{' '}
+          <span className="underline">Get verified</span>
+        </a>
+      </section>
+
       {/* ======== COMING NEXT TEASER ======== */}
       <section className="pb-12">
         <div className="rounded-2xl bg-gray-50 border border-gray-100 p-8 sm:p-10 text-center">
