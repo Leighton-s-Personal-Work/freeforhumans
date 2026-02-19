@@ -165,7 +165,7 @@ export default async function HomePage() {
       <section className="pb-10 text-center">
         <a
           href="/get-verified"
-          className="btn-primary inline-block text-sm py-2.5 px-6"
+          className="inline-block text-sm py-2.5 px-6 rounded-xl border border-gray-200 text-gray-500 font-medium hover:border-gray-300 hover:text-gray-700 transition-colors"
         >
           Don&apos;t have the World App?
         </a>
