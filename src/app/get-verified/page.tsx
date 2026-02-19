@@ -8,23 +8,22 @@ export default function GetVerifiedPage() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
           </svg>
         </div>
-        <h1 className="text-4xl font-bold mb-4">Get Verified with World ID</h1>
-        <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-          Prove you&apos;re a unique human and unlock access to free token claims
-          on FreeForHumans.
+        <h1 className="text-4xl font-bold mb-4">Claim your humanity</h1>
+        <p className="text-xl text-gray-500 max-w-2xl mx-auto">
+          Prove you&apos;re a unique human to unlock access.
         </p>
       </div>
 
       {/* What is World ID */}
       <section className="mb-16">
-        <h2 className="text-2xl font-bold mb-4">What is World ID?</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center">What is World ID?</h2>
         <div className="card">
-          <p className="text-gray-300 mb-4">
+          <p className="text-gray-600 mb-4">
             World ID is a privacy-preserving proof of personhood protocol. It lets you prove
             you&apos;re a unique human without revealing your identity. This prevents bots and
             fake accounts from claiming tokens meant for real people.
           </p>
-          <p className="text-gray-400 text-sm">
+          <p className="text-gray-500 text-sm">
             Your World ID doesn&apos;t share any personal information—it only proves you&apos;re
             human and haven&apos;t already claimed from a specific campaign.
           </p>
@@ -33,7 +32,7 @@ export default function GetVerifiedPage() {
 
       {/* Why Verify */}
       <section className="mb-16">
-        <h2 className="text-2xl font-bold mb-4">Why Get Verified?</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center">Why Get Verified?</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="card">
             <div className="w-12 h-12 bg-world-blue/20 rounded-xl mb-4 flex items-center justify-center">
@@ -41,8 +40,8 @@ export default function GetVerifiedPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 className="font-semibold mb-2">Claim Free Tokens</h3>
-            <p className="text-gray-400 text-sm">
+            <h3 className="font-semibold mb-2">Claim Free</h3>
+            <p className="text-gray-500 text-sm">
               Access exclusive token distributions from projects and individuals.
             </p>
           </div>
@@ -53,7 +52,7 @@ export default function GetVerifiedPage() {
               </svg>
             </div>
             <h3 className="font-semibold mb-2">Higher Claim Amounts</h3>
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-500 text-sm">
               Orb-verified users often receive higher claim amounts than NFC-verified users.
             </p>
           </div>
@@ -64,7 +63,7 @@ export default function GetVerifiedPage() {
               </svg>
             </div>
             <h3 className="font-semibold mb-2">Privacy Preserved</h3>
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-500 text-sm">
               Zero-knowledge proofs mean your identity stays private.
             </p>
           </div>
@@ -73,7 +72,7 @@ export default function GetVerifiedPage() {
 
       {/* Two Ways to Verify */}
       <section className="mb-16">
-        <h2 className="text-2xl font-bold mb-6">Two Ways to Verify</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">Two Ways to Verify</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Orb Verification */}
@@ -91,7 +90,7 @@ export default function GetVerifiedPage() {
               </div>
             </div>
             
-            <p className="text-gray-400 mb-4">
+            <p className="text-gray-500 mb-4">
               The gold standard of verification. Visit a World ID Orb location for
               a quick, privacy-preserving biometric scan.
             </p>
@@ -101,19 +100,19 @@ export default function GetVerifiedPage() {
                 <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span className="text-sm text-gray-300">Highest claim amounts</span>
+                <span className="text-sm text-gray-600">Highest claim amounts</span>
               </div>
               <div className="flex items-start gap-2">
                 <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span className="text-sm text-gray-300">Takes about 30 seconds</span>
+                <span className="text-sm text-gray-600">Takes about 30 seconds</span>
               </div>
               <div className="flex items-start gap-2">
                 <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span className="text-sm text-gray-300">Completely free</span>
+                <span className="text-sm text-gray-600">Completely free</span>
               </div>
             </div>
 
@@ -141,7 +140,7 @@ export default function GetVerifiedPage() {
               </div>
             </div>
             
-            <p className="text-gray-400 mb-4">
+            <p className="text-gray-500 mb-4">
               Verify from home using your NFC-enabled passport and the World App.
               No need to visit an Orb location.
             </p>
@@ -151,19 +150,19 @@ export default function GetVerifiedPage() {
                 <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span className="text-sm text-gray-300">Verify from anywhere</span>
+                <span className="text-sm text-gray-600">Verify from anywhere</span>
               </div>
               <div className="flex items-start gap-2">
                 <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span className="text-sm text-gray-300">Uses your phone&apos;s NFC</span>
+                <span className="text-sm text-gray-600">Uses your phone&apos;s NFC</span>
               </div>
               <div className="flex items-start gap-2">
                 <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span className="text-sm text-gray-300">Done in minutes</span>
+                <span className="text-sm text-gray-600">Done in minutes</span>
               </div>
             </div>
 
@@ -181,9 +180,9 @@ export default function GetVerifiedPage() {
 
       {/* Download World App */}
       <section className="mb-16">
-        <h2 className="text-2xl font-bold mb-4">Get the World App</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center">Get the World App</h2>
         <div className="card">
-          <p className="text-gray-300 mb-6">
+          <p className="text-gray-600 mb-6">
             The World App is your gateway to World ID. Download it to get verified
             and manage your digital identity.
           </p>
@@ -216,11 +215,11 @@ export default function GetVerifiedPage() {
 
       {/* FAQ */}
       <section>
-        <h2 className="text-2xl font-bold mb-6">Frequently Asked Questions</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">Frequently Asked Questions</h2>
         <div className="space-y-4">
           <div className="card">
             <h3 className="font-semibold mb-2">Is my data safe?</h3>
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-500 text-sm">
               Yes. World ID uses zero-knowledge proofs, which means it can verify
               you&apos;re human without storing or sharing any personal data. Your
               biometric data is not stored anywhere.
@@ -228,7 +227,7 @@ export default function GetVerifiedPage() {
           </div>
           <div className="card">
             <h3 className="font-semibold mb-2">What does verification prove?</h3>
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-500 text-sm">
               It proves two things: (1) you&apos;re a unique human, and (2) you
               haven&apos;t already claimed from a specific campaign. It does not
               reveal your identity.
@@ -236,14 +235,14 @@ export default function GetVerifiedPage() {
           </div>
           <div className="card">
             <h3 className="font-semibold mb-2">Can I verify with both Orb and NFC?</h3>
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-500 text-sm">
               Yes! You can have both verification levels. Orb verification provides
               the highest trust level and typically unlocks higher claim amounts.
             </p>
           </div>
           <div className="card">
             <h3 className="font-semibold mb-2">Is verification free?</h3>
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-500 text-sm">
               Yes, both Orb and NFC/Passport verification are completely free.
             </p>
           </div>
@@ -253,7 +252,7 @@ export default function GetVerifiedPage() {
       {/* CTA */}
       <section className="mt-16 text-center">
         <a href="/" className="btn-primary inline-block">
-          Browse Campaigns →
+          Claim free stuff →
         </a>
       </section>
     </div>
