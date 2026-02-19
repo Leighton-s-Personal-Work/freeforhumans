@@ -86,22 +86,25 @@ export default async function HomePage() {
               </p>
             </div>
 
-            {/* Progress & time */}
-            <div className="mb-8">
+            {/* Progress */}
+            <div className="mb-4">
               <div className="progress-bar mb-2">
                 <div
                   className="progress-bar-fill"
                   style={{ width: `${Math.min(progress, 100)}%` }}
                 />
               </div>
-              <div className="flex justify-between text-sm text-gray-400">
-                <span>
-                  {counts
-                    ? `${counts.claimed.toLocaleString()} / ${counts.total.toLocaleString()} humans claimed`
-                    : `${formatTokenAmount(currentDrop.remainingBudget, currentDrop.tokenDecimals)} remaining`}
-                </span>
-                <Countdown expiresAt={currentDrop.expiresAt} />
-              </div>
+              <p className="text-sm text-gray-400 text-center">
+                {counts
+                  ? `${counts.claimed.toLocaleString()} / ${counts.total.toLocaleString()} humans claimed`
+                  : `${formatTokenAmount(currentDrop.remainingBudget, currentDrop.tokenDecimals)} remaining`}
+              </p>
+            </div>
+
+            {/* Countdown — distinct element */}
+            <div className="mb-8 rounded-xl bg-gray-50 border border-gray-100 py-3 px-4 text-center">
+              <p className="text-xs uppercase tracking-wider text-gray-400 mb-1">Time Remaining</p>
+              <Countdown expiresAt={currentDrop.expiresAt} />
             </div>
 
             {/* Claim flow — inline */}
@@ -159,7 +162,7 @@ export default async function HomePage() {
       )}
 
       {/* ======== COMING NEXT TEASER ======== */}
-      <section className="pb-20">
+      <section className="pb-12">
         <div className="rounded-2xl bg-gray-50 border border-gray-100 p-8 sm:p-10 text-center">
           <p className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">
             Coming Next
@@ -171,6 +174,17 @@ export default async function HomePage() {
             Next drop coming soon — stay tuned.
           </p>
         </div>
+      </section>
+
+      {/* ======== CREATE CAMPAIGN LINK ======== */}
+      <section className="pb-20 text-center">
+        <a
+          href="/create"
+          className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
+        >
+          Want to give something away? →{' '}
+          <span className="underline">Create a campaign</span>
+        </a>
       </section>
 
     </div>

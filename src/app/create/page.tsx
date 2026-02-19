@@ -44,6 +44,11 @@ export default function CreateCampaignPage() {
   const [createTxHash, setCreateTxHash] = useState<`0x${string}` | undefined>();
   const [error, setError] = useState<string | null>(null);
 
+  // Cancel campaign state
+  const [cancelCampaignId, setCancelCampaignId] = useState('');
+  const [cancelTxHash, setCancelTxHash] = useState<`0x${string}` | undefined>();
+  const [cancelError, setCancelError] = useState<string | null>(null);
+
   const chainConfig = CHAIN_CONFIG[selectedChain];
 
   // Check if user is whitelisted
@@ -91,6 +96,7 @@ export default function CreateCampaignPage() {
   // Write contracts
   const { writeContract: writeApprove, isPending: isApproving } = useWriteContract();
   const { writeContract: writeCreate, isPending: isCreating } = useWriteContract();
+  const { writeContract: writeCancel, isPending: isCancelling } = useWriteContract();
 
   // Wait for transactions
   const { isSuccess: approvalSuccess, isLoading: isApprovalLoading } = useWaitForTransactionReceipt({
@@ -205,6 +211,26 @@ export default function CreateCampaignPage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create campaign');
     }
+  };
+
+  const handleCancelCampaign = () => {
+    if (!chainConfig || !cancelCampaignId) return;
+    setCancelError(null);
+    setCancelTxHash(undefined);
+
+    writeCancel({
+      address: chainConfig.contractAddress,
+      abi: FREE_FOR_HUMANS_ABI,
+      functionName: 'cancelCampaign',
+      args: [BigInt(cancelCampaignId)],
+    }, {
+      onSuccess: (hash) => {
+        setCancelTxHash(hash);
+      },
+      onError: (err) => {
+        setCancelError(err.message);
+      },
+    });
   };
 
   const handleSwitchChain = (newChainId: SupportedChainId) => {
@@ -577,6 +603,48 @@ export default function CreateCampaignPage() {
               View All Campaigns
             </a>
           </div>
+        </div>
+      )}
+
+      {/* ======== RECALL / CANCEL CAMPAIGN ======== */}
+      {isConnected && isWhitelisted && (
+        <div className="mt-12 pt-8 border-t border-gray-200">
+          <h2 className="text-xl font-semibold mb-2">Recall Campaign</h2>
+          <p className="text-gray-400 text-sm mb-4">
+            Cancel an active campaign and return remaining tokens to your wallet.
+          </p>
+          <div className="flex gap-3">
+            <input
+              type="number"
+              value={cancelCampaignId}
+              onChange={(e) => setCancelCampaignId(e.target.value)}
+              placeholder="Campaign ID"
+              min="0"
+              className="input flex-1"
+            />
+            <button
+              onClick={handleCancelCampaign}
+              disabled={!cancelCampaignId || isCancelling}
+              className="px-6 py-3 rounded-xl bg-red-500/10 text-red-600 font-semibold hover:bg-red-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isCancelling ? 'Cancelling...' : 'Recall'}
+            </button>
+          </div>
+          {cancelError && (
+            <p className="text-red-500 text-sm mt-2">{cancelError}</p>
+          )}
+          {cancelTxHash && (
+            <p className="text-sm mt-2">
+              <a
+                href={`${chainConfig?.explorerUrl}/tx/${cancelTxHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-world-blue hover:underline"
+              >
+                Transaction submitted — view on explorer →
+              </a>
+            </p>
+          )}
         </div>
       )}
     </div>

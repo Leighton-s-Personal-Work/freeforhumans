@@ -267,10 +267,9 @@ export function DropClaimFlow({ campaign, appId }: DropClaimFlowProps) {
                 </button>
               )}
 
-              <p className="text-xs text-gray-400 text-center">
-                Don&apos;t have World ID?{' '}
-                <a href="/get-verified" className="text-world-blue hover:underline">
-                  Get verified for free
+              <p className="text-sm text-gray-400 text-center mt-1">
+                <a href="/get-verified" className="text-world-blue hover:underline font-medium">
+                  Need to get verified?
                 </a>
               </p>
             </div>

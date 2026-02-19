@@ -23,7 +23,7 @@ export function Countdown({ expiresAt }: CountdownProps) {
   const remaining = expiresAt - now;
 
   if (remaining <= 0) {
-    return <span className="font-mono">Ended</span>;
+    return <span className="font-mono text-lg font-semibold text-gray-800">Ended</span>;
   }
 
   const days = Math.floor(remaining / 86400);
@@ -32,7 +32,7 @@ export function Countdown({ expiresAt }: CountdownProps) {
   const seconds = remaining % 60;
 
   return (
-    <span className="font-mono tabular-nums">
+    <span className="font-mono tabular-nums text-lg font-semibold text-gray-800">
       {days > 0 && <>{days}d </>}
       {padZero(hours)}:{padZero(minutes)}:{padZero(seconds)}
     </span>
