@@ -48,10 +48,10 @@ export type SupportedChainId = 480 | 8453;
 
 // Contract addresses - can be overridden via env vars for testing
 // Production (app_70a008e9fcd1d01ec35fb6e64f736a70):
-//   World Chain: 0xb08FB3DD699988EF51402dB69DFB9A7BCeD802e4
+//   World Chain: 0x3f332A60A32F57d77D9834c4B11dB63999387f8f
 //   Base: 0x36A9dD08A1703e63139DFaa3FFA6C6a44f47AA09
 // Use NEXT_PUBLIC_ prefix so they're available client-side
-const WORLD_CHAIN_CONTRACT = (process.env.NEXT_PUBLIC_WORLD_CHAIN_CONTRACT_ADDRESS || '0xb08FB3DD699988EF51402dB69DFB9A7BCeD802e4') as `0x${string}`;
+const WORLD_CHAIN_CONTRACT = (process.env.NEXT_PUBLIC_WORLD_CHAIN_CONTRACT_ADDRESS || '0x3f332A60A32F57d77D9834c4B11dB63999387f8f') as `0x${string}`;
 const BASE_CONTRACT = (process.env.NEXT_PUBLIC_BASE_CONTRACT_ADDRESS || '0x36A9dD08A1703e63139DFaa3FFA6C6a44f47AA09') as `0x${string}`;
 
 export const CHAIN_CONFIG: Record<SupportedChainId, {
@@ -65,7 +65,7 @@ export const CHAIN_CONFIG: Record<SupportedChainId, {
     chain: worldchain,
     name: 'World Chain',
     contractAddress: WORLD_CHAIN_CONTRACT,
-    worldIdRouter: '0x57f928158C3EE7CDad1e4D8642503c4D0201f611',
+    worldIdRouter: '0x17B354dD2595411ff79041f930e491A4Df39A278',
     explorerUrl: 'https://worldscan.org',
   },
   8453: {

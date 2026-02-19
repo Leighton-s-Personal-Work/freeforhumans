@@ -77,7 +77,7 @@ contract DebugWorldIdTest is Test {
 
         // Try calling verifyProof directly on the World ID Router (mainnet fork)
         // This will tell us exactly what's failing
-        IWorldID worldId = IWorldID(0x57f928158C3EE7CDad1e4D8642503c4D0201f611);
+        IWorldID worldId = IWorldID(0x17B354dD2595411ff79041f930e491A4Df39A278);
         
         console.log("Calling verifyProof with:");
         console.log("  root:", root);

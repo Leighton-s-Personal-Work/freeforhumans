@@ -10,7 +10,7 @@ import "../src/FreeForHumans.sol";
 contract DeployFreeForHumans is Script {
     // World ID Router addresses per chain
     // World Chain: https://docs.world.org/world-id/reference/address-book
-    address constant WORLD_CHAIN_ROUTER = 0x57f928158C3EE7CDad1e4D8642503c4D0201f611;
+    address constant WORLD_CHAIN_ROUTER = 0x17B354dD2595411ff79041f930e491A4Df39A278;
     // Base: confirmed from spec
     address constant BASE_ROUTER = 0xBCC7e5910178AFFEEeBA573ba6903E9869594163;
 

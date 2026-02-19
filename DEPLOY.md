@@ -194,7 +194,7 @@ cast send <CONTRACT_ADDRESS> "pause()" --rpc-url <RPC_URL> --private-key $DEPLOY
 
 | Chain | Router Address |
 |-------|---------------|
-| World Chain | `0x57f928158C3EE7CDad1e4D8642503c4D0201f611` |
+|| World Chain | `0x17B354dD2595411ff79041f930e491A4Df39A278` |
 | Base | `0xBCC7e5910178AFFEEeBA573ba6903E9869594163` |
 
 Reference: https://docs.world.org/world-id/reference/address-book
