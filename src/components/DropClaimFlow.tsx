@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { IDKitWidget, VerificationLevel, ISuccessResult } from '@worldcoin/idkit';
 import { type SerializedCampaign } from '@/lib/contracts';
 import { formatUnits, isAddress } from 'viem';
@@ -85,9 +85,11 @@ export function DropClaimFlow({ campaign, appId }: DropClaimFlowProps) {
   const [result, setResult] = useState<ClaimResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Use orb verification by default for the gold campaign (higher claim amounts)
-  const verificationLevel = 'orb';
-  const claimAmount = campaign.orbClaimAmount;
+  // Track which verification level the user selected
+  const [verificationLevel, setVerificationLevel] = useState<'orb' | 'device'>('orb');
+  const selectedLevelRef = useRef<'orb' | 'device'>('orb');
+  const claimAmount = verificationLevel === 'orb' ? campaign.orbClaimAmount : campaign.nfcClaimAmount;
+  const hasPassport = BigInt(campaign.nfcClaimAmount) > 0n;
 
   const resolveAndOpenVerify = async () => {
     if (!recipient.trim()) return;
@@ -146,7 +148,7 @@ export function DropClaimFlow({ campaign, appId }: DropClaimFlowProps) {
           merkle_root: proof.merkle_root,
           nullifier_hash: proof.nullifier_hash,
           proof: proof.proof,
-          verification_level: verificationLevel,
+          verification_level: selectedLevelRef.current,
         }),
       });
 
@@ -179,7 +181,7 @@ export function DropClaimFlow({ campaign, appId }: DropClaimFlowProps) {
       setError(msg);
       setStep('error');
     }
-  }, [resolvedRecipient, verificationLevel, campaign]);
+  }, [resolvedRecipient, campaign]);
 
   const handleReset = () => {
     setStep('input');
@@ -224,31 +226,69 @@ export function DropClaimFlow({ campaign, appId }: DropClaimFlowProps) {
                 <p className="text-red-500 text-sm text-center">{error}</p>
               )}
 
-              {/* IDKit widget wraps the claim button */}
               {resolvedRecipient ? (
-                <IDKitWidget
-                  app_id={appId as `app_${string}`}
-                  action="claim"
-                  signal={resolvedRecipient}
-                  verification_level={VerificationLevel.Orb}
-                  onSuccess={handleVerificationSuccess}
-                >
-                  {({ open }) => (
-                    <button
-                      onClick={open}
-                      className="btn-primary w-full text-lg py-4"
+                <>
+                  <p className="text-sm text-gray-400 text-center">
+                    Claiming as <span className="font-medium text-gray-600">{recipient}</span>
+                  </p>
+
+                  {/* Orb claim button */}
+                  <IDKitWidget
+                    app_id={appId as `app_${string}`}
+                    action="claim"
+                    signal={resolvedRecipient}
+                    verification_level={VerificationLevel.Orb}
+                    onSuccess={handleVerificationSuccess}
+                  >
+                    {({ open }) => (
+                      <button
+                        onClick={() => {
+                          selectedLevelRef.current = 'orb';
+                          setVerificationLevel('orb');
+                          open();
+                        }}
+                        className="btn-primary w-full text-lg py-4"
+                      >
+                        Claim {formatClaimAmount(campaign.orbClaimAmount, campaign.tokenDecimals)} {campaign.tokenSymbol} — Orb ✨
+                      </button>
+                    )}
+                  </IDKitWidget>
+
+                  {/* Passport claim button */}
+                  {hasPassport && (
+                    <IDKitWidget
+                      app_id={appId as `app_${string}`}
+                      action="claim"
+                      signal={resolvedRecipient}
+                      verification_level={VerificationLevel.Device}
+                      onSuccess={handleVerificationSuccess}
                     >
-                      Claim Your Gold ✨
-                    </button>
+                      {({ open }) => (
+                        <button
+                          onClick={() => {
+                            selectedLevelRef.current = 'device';
+                            setVerificationLevel('device');
+                            open();
+                          }}
+                          className="w-full text-base py-3 rounded-xl border border-gray-200 text-gray-600 font-medium hover:border-gray-300 hover:text-gray-800 transition-colors"
+                        >
+                          Claim {formatClaimAmount(campaign.nfcClaimAmount, campaign.tokenDecimals)} {campaign.tokenSymbol} — Passport
+                        </button>
+                      )}
+                    </IDKitWidget>
                   )}
-                </IDKitWidget>
+
+                  <button
+                    onClick={() => setResolvedRecipient(null)}
+                    className="text-xs text-gray-400 hover:text-gray-600 transition-colors mx-auto block"
+                  >
+                    Change username
+                  </button>
+                </>
               ) : (
                 <button
                   onClick={async () => {
-                    const addr = await resolveAndOpenVerify();
-                    if (addr) {
-                      // Address resolved — the IDKit widget will appear on next render
-                    }
+                    await resolveAndOpenVerify();
                   }}
                   disabled={!recipient.trim() || isResolving}
                   className="btn-primary w-full text-lg py-4"
@@ -262,7 +302,7 @@ export function DropClaimFlow({ campaign, appId }: DropClaimFlowProps) {
                       Resolving...
                     </span>
                   ) : (
-                    'Claim Your Gold ✨'
+                    'Continue'
                   )}
                 </button>
               )}
