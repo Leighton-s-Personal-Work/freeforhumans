@@ -249,7 +249,7 @@ export function DropClaimFlow({ campaign, appId }: DropClaimFlowProps) {
                         }}
                         className="btn-primary w-full text-lg py-4"
                       >
-                        Claim {formatClaimAmount(campaign.orbClaimAmount, campaign.tokenDecimals)} {campaign.tokenSymbol} — Orb ✨
+                        Claim {formatClaimAmount(campaign.orbClaimAmount, campaign.tokenDecimals)} Gold — Orb ✨
                       </button>
                     )}
                   </IDKitWidget>
@@ -272,7 +272,7 @@ export function DropClaimFlow({ campaign, appId }: DropClaimFlowProps) {
                           }}
                           className="w-full text-base py-3 rounded-xl border border-gray-200 text-gray-600 font-medium hover:border-gray-300 hover:text-gray-800 transition-colors"
                         >
-                          Claim {formatClaimAmount(campaign.nfcClaimAmount, campaign.tokenDecimals)} {campaign.tokenSymbol} — Passport
+                          Claim {formatClaimAmount(campaign.nfcClaimAmount, campaign.tokenDecimals)} Gold — Passport
                         </button>
                       )}
                     </IDKitWidget>
@@ -369,7 +369,7 @@ export function DropClaimFlow({ campaign, appId }: DropClaimFlowProps) {
                 You just claimed free gold! 🪙
               </h3>
               <p className="text-gray-500 mb-6">
-                {formatClaimAmount(claimAmount, campaign.tokenDecimals)} {campaign.tokenSymbol} is on its way to you.
+                {formatClaimAmount(claimAmount, campaign.tokenDecimals)} Gold is on its way to you.
               </p>
 
               <div className="space-y-3">
