@@ -65,8 +65,8 @@ export default async function HomePage() {
           <div className="drop-card">
             {/* Token identity */}
             <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="w-10 h-10 flex items-center justify-center text-2xl">
-                🪨
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-300 via-yellow-500 to-yellow-700 flex items-center justify-center shadow">
+                <span className="text-sm font-bold text-yellow-900/80">Au</span>
               </div>
               <div>
                 <p className="font-semibold text-lg leading-tight">

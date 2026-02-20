@@ -14,62 +14,6 @@ export default function GetVerifiedPage() {
         </p>
       </div>
 
-      {/* What is World ID */}
-      <section className="mb-16">
-        <h2 className="text-2xl font-bold mb-4 text-center">What is World ID?</h2>
-        <div className="card">
-          <p className="text-gray-600 mb-4">
-            World ID is a privacy-preserving proof of personhood protocol. It lets you prove
-            you&apos;re a unique human without revealing your identity. This prevents bots and
-            fake accounts from claiming tokens meant for real people.
-          </p>
-          <p className="text-gray-500 text-sm">
-            Your World ID doesn&apos;t share any personal information—it only proves you&apos;re
-            human and haven&apos;t already claimed from a specific campaign.
-          </p>
-        </div>
-      </section>
-
-      {/* Why Verify */}
-      <section className="mb-16">
-        <h2 className="text-2xl font-bold mb-4 text-center">Why Get Verified?</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="card">
-            <div className="w-12 h-12 bg-world-blue/20 rounded-xl mb-4 flex items-center justify-center">
-              <svg className="w-6 h-6 text-world-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <h3 className="font-semibold mb-2">Claim Free</h3>
-            <p className="text-gray-500 text-sm">
-              Access exclusive token distributions from projects and individuals.
-            </p>
-          </div>
-          <div className="card">
-            <div className="w-12 h-12 bg-world-blue/20 rounded-xl mb-4 flex items-center justify-center">
-              <svg className="w-6 h-6 text-world-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-              </svg>
-            </div>
-            <h3 className="font-semibold mb-2">Higher Claim Amounts</h3>
-            <p className="text-gray-500 text-sm">
-              Orb-verified users often receive higher claim amounts than NFC-verified users.
-            </p>
-          </div>
-          <div className="card">
-            <div className="w-12 h-12 bg-world-blue/20 rounded-xl mb-4 flex items-center justify-center">
-              <svg className="w-6 h-6 text-world-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-            </div>
-            <h3 className="font-semibold mb-2">Privacy Preserved</h3>
-            <p className="text-gray-500 text-sm">
-              Zero-knowledge proofs mean your identity stays private.
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* Two Ways to Verify */}
       <section className="mb-16">
         <h2 className="text-2xl font-bold mb-6 text-center">Two Ways to Verify</h2>
