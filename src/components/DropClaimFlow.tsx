@@ -77,6 +77,26 @@ function Particles() {
   );
 }
 
+function friendlyErrorMessage(raw: string): string {
+  const lower = raw.toLowerCase();
+  if (lower.includes('insufficient') || lower.includes('insufficientclaimamount'))
+    return 'This campaign doesn\'t support your verification level. Try the other option or get Orb-verified for higher claim amounts.';
+  if (lower.includes('notactive') || lower.includes('not active'))
+    return 'This campaign is no longer active.';
+  if (lower.includes('expired'))
+    return 'This campaign has expired.';
+  if (lower.includes('budget') || lower.includes('exceeded'))
+    return 'This drop has been fully claimed. Check back for the next one!';
+  if (lower.includes('invalid proof') || lower.includes('invalidproof'))
+    return 'Verification failed. Please try again.';
+  if (lower.includes('nullifier') || lower.includes('already claimed') || lower.includes('alreadyclaimed'))
+    return 'You\'ve already claimed from this campaign.';
+  // If the raw message is very long / looks like an error code, show a generic message
+  if (raw.length > 150 || /0x[0-9a-f]{8,}/i.test(raw))
+    return 'Something went wrong with your claim. Please try again or use a different verification level.';
+  return raw;
+}
+
 export function DropClaimFlow({ campaign, appId }: DropClaimFlowProps) {
   const [step, setStep] = useState<ClaimStep>('input');
   const [recipient, setRecipient] = useState('');
@@ -174,11 +194,11 @@ export function DropClaimFlow({ campaign, appId }: DropClaimFlowProps) {
       setStep('success');
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Failed to submit claim';
-      if (msg.includes('already claimed') || msg.includes('AlreadyClaimed')) {
+      if (msg.toLowerCase().includes('already claimed') || msg.includes('AlreadyClaimed')) {
         setStep('already-claimed');
         return;
       }
-      setError(msg);
+      setError(friendlyErrorMessage(msg));
       setStep('error');
     }
   }, [resolvedRecipient, campaign]);
@@ -369,7 +389,7 @@ export function DropClaimFlow({ campaign, appId }: DropClaimFlowProps) {
                 You just claimed free gold! 🪙
               </h3>
               <p className="text-gray-500 mb-6">
-                {formatClaimAmount(claimAmount, campaign.tokenDecimals)} Gold is on its way to you.
+                {formatClaimAmount(claimAmount, campaign.tokenDecimals)} Gold is now in your World App wallet — see it there!
               </p>
 
               <div className="space-y-3">
