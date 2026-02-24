@@ -34,18 +34,102 @@ function computeClaimsCount(campaign: SerializedCampaign): { claimed: number; to
   return { claimed, total };
 }
 
+function DropCard({ campaign, appId }: { campaign: SerializedCampaign; appId: string }) {
+  const isExpired = campaign.expiresAt <= Math.floor(Date.now() / 1000);
+  const isEmpty = BigInt(campaign.remainingBudget) === 0n;
+  const counts = computeClaimsCount(campaign);
+  const progress = Number((BigInt(campaign.totalClaimed) * 100n) / BigInt(campaign.totalBudget));
+
+  return (
+    <div className="drop-card">
+      {/* Token identity */}
+      <div className="flex items-center justify-center gap-3 mb-6">
+        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-300 via-yellow-500 to-yellow-700 flex items-center justify-center shadow">
+          <span className="text-sm font-bold text-yellow-900/80">Au</span>
+        </div>
+        <div>
+          <p className="font-semibold text-lg leading-tight">
+            {campaign.title || campaign.tokenSymbol || 'Token Drop'}
+          </p>
+          <p className="text-sm text-gray-400">{campaign.tokenSymbol}</p>
+        </div>
+      </div>
+
+      {/* Claim amount — big and clear */}
+      <div className="text-center mb-8">
+        <p className="text-5xl sm:text-6xl font-extrabold tracking-tight text-gradient-gold mb-2">
+          {formatTokenAmount(campaign.orbClaimAmount, campaign.tokenDecimals)}
+        </p>
+        <p className="text-gray-500 text-base">
+          {campaign.tokenSymbol} per human
+        </p>
+      </div>
+
+      {/* Progress */}
+      <div className="mb-4">
+        <div className="progress-bar mb-2">
+          <div
+            className="progress-bar-fill"
+            style={{ width: `${Math.min(progress, 100)}%` }}
+          />
+        </div>
+        <p className="text-sm text-gray-400 text-center">
+          {counts.total > 0
+            ? `${counts.claimed.toLocaleString()} / ${counts.total.toLocaleString()} humans claimed`
+            : `${formatTokenAmount(campaign.remainingBudget, campaign.tokenDecimals)} remaining`}
+        </p>
+      </div>
+
+      {/* Countdown — distinct element */}
+      <div className="mb-8 rounded-xl bg-gray-50 border border-gray-100 py-3 px-4 text-center">
+        <p className="text-xs uppercase tracking-wider text-gray-400 mb-1">Time Remaining</p>
+        <Countdown expiresAt={campaign.expiresAt} />
+      </div>
+
+      {/* Claim flow — inline */}
+      {isExpired ? (
+        <div className="text-center py-6">
+          <p className="text-lg font-semibold mb-1">This drop has ended.</p>
+          <p className="text-gray-400 text-sm">Check back for the next one.</p>
+        </div>
+      ) : isEmpty ? (
+        <div className="text-center py-6">
+          <p className="text-lg font-semibold mb-1">
+            This drop is gone! All claimed by real humans.
+          </p>
+          <p className="text-gray-400 text-sm">Stay tuned for the next drop.</p>
+        </div>
+      ) : appId ? (
+        <DropClaimFlow campaign={campaign} appId={appId} />
+      ) : (
+        <div className="text-center py-6">
+          <p className="text-gray-400 text-sm">Configuration required — World ID App ID not set.</p>
+        </div>
+      )}
+
+      {/* Verification level note */}
+      <div className="mt-6 pt-5 border-t border-gray-100 flex items-center justify-center gap-4 text-xs text-gray-400">
+        <span className="flex items-center gap-1">
+          <svg className="w-3.5 h-3.5 text-world-blue" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+          </svg>
+          Verified with World ID
+        </span>
+        <span>·</span>
+        <span>Gas-free claim</span>
+        <span>·</span>
+        <span>One per human</span>
+      </div>
+    </div>
+  );
+}
+
 export default async function HomePage() {
   const campaigns = await getCampaigns();
   const appId = process.env.NEXT_PUBLIC_WORLD_APP_ID || '';
 
-  // The "current drop" is the first active campaign
-  const currentDrop = campaigns.length > 0 ? campaigns[0] : null;
-  const isExpired = currentDrop ? currentDrop.expiresAt <= Math.floor(Date.now() / 1000) : false;
-  const isEmpty = currentDrop ? BigInt(currentDrop.remainingBudget) === 0n : false;
-  const counts = currentDrop ? computeClaimsCount(currentDrop) : null;
-  const progress = currentDrop
-    ? Number((BigInt(currentDrop.totalClaimed) * 100n) / BigInt(currentDrop.totalBudget))
-    : 0;
+  // Filter to active campaigns
+  const activeCampaigns = campaigns.filter(c => c.isActive);
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -59,89 +143,12 @@ export default async function HomePage() {
         </p>
       </section>
 
-      {/* ======== THE DROP CARD ======== */}
-      {currentDrop ? (
-        <section className="pb-20">
-          <div className="drop-card">
-            {/* Token identity */}
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-300 via-yellow-500 to-yellow-700 flex items-center justify-center shadow">
-                <span className="text-sm font-bold text-yellow-900/80">Au</span>
-              </div>
-              <div>
-                <p className="font-semibold text-lg leading-tight">
-                  Tether Gold ({currentDrop.tokenSymbol || 'XAUT'})
-                </p>
-                <p className="text-sm text-gray-400">{currentDrop.title}</p>
-              </div>
-            </div>
-
-            {/* Claim amount — big and clear */}
-            <div className="text-center mb-8">
-              <p className="text-5xl sm:text-6xl font-extrabold tracking-tight text-gradient-gold mb-2">
-                {formatTokenAmount(currentDrop.orbClaimAmount, currentDrop.tokenDecimals)}
-              </p>
-              <p className="text-gray-500 text-base">
-                troy ounces of gold per human
-              </p>
-            </div>
-
-            {/* Progress */}
-            <div className="mb-4">
-              <div className="progress-bar mb-2">
-                <div
-                  className="progress-bar-fill"
-                  style={{ width: `${Math.min(progress, 100)}%` }}
-                />
-              </div>
-              <p className="text-sm text-gray-400 text-center">
-                {counts
-                  ? `${counts.claimed.toLocaleString()} / ${counts.total.toLocaleString()} humans claimed`
-                  : `${formatTokenAmount(currentDrop.remainingBudget, currentDrop.tokenDecimals)} remaining`}
-              </p>
-            </div>
-
-            {/* Countdown — distinct element */}
-            <div className="mb-8 rounded-xl bg-gray-50 border border-gray-100 py-3 px-4 text-center">
-              <p className="text-xs uppercase tracking-wider text-gray-400 mb-1">Time Remaining</p>
-              <Countdown expiresAt={currentDrop.expiresAt} />
-            </div>
-
-            {/* Claim flow — inline */}
-            {isExpired ? (
-              <div className="text-center py-6">
-                <p className="text-lg font-semibold mb-1">This drop has ended.</p>
-                <p className="text-gray-400 text-sm">Check back for the next one.</p>
-              </div>
-            ) : isEmpty ? (
-              <div className="text-center py-6">
-                <p className="text-lg font-semibold mb-1">
-                  This drop is gone! All claimed by real humans.
-                </p>
-                <p className="text-gray-400 text-sm">Stay tuned for the next drop.</p>
-              </div>
-            ) : appId ? (
-              <DropClaimFlow campaign={currentDrop} appId={appId} />
-            ) : (
-              <div className="text-center py-6">
-                <p className="text-gray-400 text-sm">Configuration required — World ID App ID not set.</p>
-              </div>
-            )}
-
-            {/* Verification level note */}
-            <div className="mt-6 pt-5 border-t border-gray-100 flex items-center justify-center gap-4 text-xs text-gray-400">
-              <span className="flex items-center gap-1">
-                <svg className="w-3.5 h-3.5 text-world-blue" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                </svg>
-                Verified with World ID
-              </span>
-              <span>·</span>
-              <span>Gas-free claim</span>
-              <span>·</span>
-              <span>One per human</span>
-            </div>
-          </div>
+      {/* ======== DROP CARDS ======== */}
+      {activeCampaigns.length > 0 ? (
+        <section className="pb-12 space-y-8">
+          {activeCampaigns.map((campaign) => (
+            <DropCard key={campaign.id} campaign={campaign} appId={appId} />
+          ))}
         </section>
       ) : (
         /* No campaigns — coming soon */
