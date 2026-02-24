@@ -236,7 +236,7 @@ export function DropClaimFlow({ campaign, appId }: DropClaimFlowProps) {
                     setRecipient(e.target.value);
                     setError(null);
                   }}
-                  placeholder="Enter Your World App Username"
+                  placeholder={campaign.chainId === 8453 ? 'Enter your Base wallet address' : 'Enter Your World App Username'}
                   className="input text-center text-lg"
                   autoFocus
                 />

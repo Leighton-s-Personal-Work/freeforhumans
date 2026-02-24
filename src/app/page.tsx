@@ -34,6 +34,78 @@ function computeClaimsCount(campaign: SerializedCampaign): { claimed: number; to
   return { claimed, total };
 }
 
+// Token icon that varies by symbol
+function TokenIcon({ symbol }: { symbol?: string }) {
+  const s = (symbol || '').toUpperCase();
+  if (s === 'XAUT') {
+    return (
+      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-300 via-yellow-500 to-yellow-700 flex items-center justify-center shadow">
+        <span className="text-sm font-bold text-yellow-900/80">Au</span>
+      </div>
+    );
+  }
+  if (s === 'USDC') {
+    return (
+      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow">
+        <span className="text-sm font-bold text-white">$</span>
+      </div>
+    );
+  }
+  if (s === 'ETH' || s === 'WETH') {
+    return (
+      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400 to-purple-600 flex items-center justify-center shadow">
+        <span className="text-sm font-bold text-white">Ξ</span>
+      </div>
+    );
+  }
+  if (s === 'WLD') {
+    return (
+      <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center shadow">
+        <span className="text-sm font-bold text-white">W</span>
+      </div>
+    );
+  }
+  // Default: first letter
+  return (
+    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-300 to-gray-500 flex items-center justify-center shadow">
+      <span className="text-sm font-bold text-white">{s.charAt(0) || '?'}</span>
+    </div>
+  );
+}
+
+// Chain badge
+function ChainBadge({ chainId }: { chainId: number }) {
+  if (chainId === 480) {
+    return (
+      <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-black/5 text-gray-600">
+        <span className="w-2 h-2 rounded-full bg-black inline-block"></span>
+        World Chain
+      </span>
+    );
+  }
+  if (chainId === 8453) {
+    return (
+      <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-blue-50 text-blue-600">
+        <span className="w-2 h-2 rounded-full bg-blue-500 inline-block"></span>
+        Base
+      </span>
+    );
+  }
+  return null;
+}
+
+// World Verified Human badge per World ID design guidelines
+function VerifiedHumanBadge() {
+  return (
+    <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-black text-white">
+      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+      </svg>
+      human
+    </span>
+  );
+}
+
 function DropCard({ campaign, appId }: { campaign: SerializedCampaign; appId: string }) {
   const isExpired = campaign.expiresAt <= Math.floor(Date.now() / 1000);
   const isEmpty = BigInt(campaign.remainingBudget) === 0n;
@@ -42,11 +114,14 @@ function DropCard({ campaign, appId }: { campaign: SerializedCampaign; appId: st
 
   return (
     <div className="drop-card">
+      {/* Chain badge */}
+      <div className="flex justify-center mb-4">
+        <ChainBadge chainId={campaign.chainId} />
+      </div>
+
       {/* Token identity */}
       <div className="flex items-center justify-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-300 via-yellow-500 to-yellow-700 flex items-center justify-center shadow">
-          <span className="text-sm font-bold text-yellow-900/80">Au</span>
-        </div>
+        <TokenIcon symbol={campaign.tokenSymbol} />
         <div>
           <p className="font-semibold text-lg leading-tight">
             {campaign.title || campaign.tokenSymbol || 'Token Drop'}
@@ -109,12 +184,7 @@ function DropCard({ campaign, appId }: { campaign: SerializedCampaign; appId: st
 
       {/* Verification level note */}
       <div className="mt-6 pt-5 border-t border-gray-100 flex items-center justify-center gap-4 text-xs text-gray-400">
-        <span className="flex items-center gap-1">
-          <svg className="w-3.5 h-3.5 text-world-blue" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-          </svg>
-          Verified with World ID
-        </span>
+        <VerifiedHumanBadge />
         <span>·</span>
         <span>Gas-free claim</span>
         <span>·</span>
