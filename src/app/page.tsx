@@ -184,7 +184,12 @@ function DropCard({ campaign, appId }: { campaign: SerializedCampaign; appId: st
 
       {/* Verification level note */}
       <div className="mt-6 pt-5 border-t border-gray-100 flex items-center justify-center gap-4 text-xs text-gray-400">
-        <VerifiedHumanBadge />
+        <span className="flex items-center gap-1">
+          <svg className="w-3.5 h-3.5 text-world-blue" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+          </svg>
+          Verified with World ID
+        </span>
         <span>·</span>
         <span>Gas-free claim</span>
         <span>·</span>
@@ -209,7 +214,7 @@ export default async function HomePage() {
           <span className="text-gradient-gold">Free for humans.</span>
         </h1>
         <p className="text-lg sm:text-xl text-gray-500 max-w-xl mx-auto">
-          No catch, claim things just by being a human (no clankers allowed!)
+          Claim things just by being a human
         </p>
       </section>
 
