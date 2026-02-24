@@ -268,7 +268,7 @@ placeholder={campaign.chainId === 8453 ? 'Enter wallet address or ENS name' : 'E
                         }}
                         className="btn-primary w-full text-lg py-4"
                       >
-                        Claim {formatClaimAmount(campaign.orbClaimAmount, campaign.tokenDecimals)} Gold — Orb ✨
+                        Claim {formatClaimAmount(campaign.orbClaimAmount, campaign.tokenDecimals)} {campaign.tokenSymbol} — Orb ✨
                       </button>
                     )}
                   </IDKitWidget>
@@ -291,7 +291,7 @@ placeholder={campaign.chainId === 8453 ? 'Enter wallet address or ENS name' : 'E
                           }}
                           className="w-full text-base py-3 rounded-xl border border-gray-200 text-gray-600 font-medium hover:border-gray-300 hover:text-gray-800 transition-colors"
                         >
-                          Claim {formatClaimAmount(campaign.nfcClaimAmount, campaign.tokenDecimals)} Gold — Passport
+                          Claim {formatClaimAmount(campaign.nfcClaimAmount, campaign.tokenDecimals)} {campaign.tokenSymbol} — Passport
                         </button>
                       )}
                     </IDKitWidget>
@@ -348,7 +348,7 @@ placeholder={campaign.chainId === 8453 ? 'Enter wallet address or ENS name' : 'E
               <div className="absolute inset-0 rounded-full border-4 border-gray-200"></div>
               <div className="absolute inset-0 rounded-full border-4 border-gold border-t-transparent animate-spin"></div>
             </div>
-            <h3 className="text-lg font-semibold mb-1">Sending your gold...</h3>
+            <h3 className="text-lg font-semibold mb-1">Sending your {campaign.tokenSymbol || 'tokens'}...</h3>
             <p className="text-gray-500 text-sm">
               Hang tight, this takes a few seconds.
             </p>
@@ -385,10 +385,10 @@ placeholder={campaign.chainId === 8453 ? 'Enter wallet address or ENS name' : 'E
               transition={{ delay: 0.5 }}
             >
               <h3 className="text-2xl font-bold mb-2">
-                You just claimed free gold! 🪙
+                You just claimed free {campaign.tokenSymbol || 'tokens'}! 🎉
               </h3>
               <p className="text-gray-500 mb-6">
-                {formatClaimAmount(claimAmount, campaign.tokenDecimals)} Gold is now in your World App wallet — see it there!
+                {formatClaimAmount(claimAmount, campaign.tokenDecimals)} {campaign.tokenSymbol} is now in your wallet — see it there!
               </p>
 
               <div className="space-y-3">
